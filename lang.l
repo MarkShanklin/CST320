@@ -9,8 +9,15 @@
 //
 // Date: Nov. 23, 2015
 //
+// Modified: Mark A Shanklin
+// mark.shanklin@oit.edu
+// 
+// Date: Jan. 19, 2016
+//
 
 #include "tokens.h"
+#include "cSymbol.h"
+#include "cSymbolTable.h"
 
 #define DO_RETURN(a) return (a)
 //#define DO_RETURN(a) return Return(a)
@@ -45,7 +52,10 @@ identifier		[a-zA-Z][a-zA-Z0-9]*
 "return"                        DO_RETURN(RETURN);
 {int_val}                       DO_RETURN(INT_VAL);
 {float_val}                     DO_RETURN(FLOAT_VAL);
-{identifier}                    DO_RETURN(IDENTIFIER);
+{identifier}                    {
+                                    yylval.symbol = Insert(yytext);
+                                    return IDENTIFIER;
+                                }
 "=="                        	DO_RETURN(EQUALS);
 "&&"                        	DO_RETURN(AND);
 "||"                        	DO_RETURN(OR);
@@ -54,8 +64,14 @@ identifier		[a-zA-Z][a-zA-Z0-9]*
 "."				DO_RETURN('.');
 "("				DO_RETURN('(');
 ")"				DO_RETURN(')');
-"{"				DO_RETURN('{');
-"}"				DO_RETURN('}');
+"{"				{
+                                    IncreaseScope();
+                                    return yytext[0];
+                                }
+"}"				{
+                                    DecreaseScope();
+                                    return yytext[0];
+                                }
 "["				DO_RETURN('[');
 "]"				DO_RETURN(']');
 ";"				DO_RETURN(';');
@@ -66,6 +82,7 @@ identifier		[a-zA-Z][a-zA-Z0-9]*
 "/"				DO_RETURN('/');
 "%"				DO_RETURN('%');
 "="				DO_RETURN('=');
+"_"                             DO_RETURN('_');
 .				DO_RETURN(JUNK_TOKEN);
 
 %%

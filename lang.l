@@ -16,6 +16,7 @@
 //
 
 #include "tokens.h"
+#include "lex.h"
 #include "cSymbol.h"
 #include "cSymbolTable.h"
 
@@ -53,7 +54,8 @@ identifier		[a-zA-Z][a-zA-Z0-9]*
 {int_val}                       DO_RETURN(INT_VAL);
 {float_val}                     DO_RETURN(FLOAT_VAL);
 {identifier}                    {
-                                    yylval.symbol = Insert(yytext);
+                                    extern cSymbolTable g_SymbolTable;
+                                    yylval.symbol = g_SymbolTable.Insert(yytext);
                                     return IDENTIFIER;
                                 }
 "=="                        	DO_RETURN(EQUALS);
@@ -65,11 +67,13 @@ identifier		[a-zA-Z][a-zA-Z0-9]*
 "("				DO_RETURN('(');
 ")"				DO_RETURN(')');
 "{"				{
-                                    IncreaseScope();
+                                    extern cSymbolTable g_SymbolTable;
+                                    g_SymbolTable.IncreaseScope();
                                     return yytext[0];
                                 }
 "}"				{
-                                    DecreaseScope();
+                                    extern cSymbolTable g_SymbolTable;
+                                    g_SymbolTable.DecreaseScope();
                                     return yytext[0];
                                 }
 "["				DO_RETURN('[');

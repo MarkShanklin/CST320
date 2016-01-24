@@ -23,6 +23,9 @@
 #include "lex.h"
 #include "tokens.h"
 
+//definiton of global yylval
+yylval_t yylval;
+
 cSymbolTable g_SymbolTable;
 long long cSymbol::nextId = 0;
 

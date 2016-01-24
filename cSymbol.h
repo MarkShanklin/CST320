@@ -1,3 +1,9 @@
+/*******************************************
+ * Author: Phil Howard
+ *
+ * ModifiedBy: Mark Shanklin
+ * Date: Jan. 23, 2016
+ ******************************************/
 #pragma once
 #include <string>
 
@@ -12,7 +18,7 @@ class cSymbol
             m_name = name;
         }
 
-        string ToString()
+        virtual string ToString()
         {
             string result("<sym id=\"");
             result += std::to_string(m_id);
@@ -21,9 +27,12 @@ class cSymbol
             return result;
         }
 
-        string GetName() { return m_name; }
+        string GetName()
+        {
+            return m_name;
+        }
     protected:
-        static long long nextId;
-        long long m_id;
+        static long long nextId; //symbolCount
+        long long m_id; //mSequence
         string m_name;
 };

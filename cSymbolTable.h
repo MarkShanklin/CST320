@@ -1,100 +1,118 @@
-/*******************************************
- * Author:          Mark Shanklin
- *                  mark.shanklin@oit.edu
- *
- * Date Created:    Jan. 20, 2016
- * Last Mod. Date:  Jan. 23, 2016
- * Lab Number:      3
- * File Name:       cSymbolTable.h
- *
- ******************************************/
-#ifndef CSYMBOLTABLE_H
-#define CSYMBOLTABLE_H
+#pragma once
+//**************************************
+// cSymbolTable.h
+//
+// Defines a nested symbol table.
+// Individual levels of the symbol table use a std::unordered_map from the STL
+//
+// Author: Phil Howard 
+// phil.howard@oit.edu
+//
+// Date: Jan. 26, 2016
+//
 
-#include <iostream>
-#include <map>//hash like functionality.
-#include <list>//stack like functionality.
-#include <string>//used for storing yytext.
-#include "cSymbol.h"//used for symbols.
+#include <string>
+#include <unordered_map>
+#include <list>
+#include <utility>      // use pair
 
-using std::string;//needed for holding yytext.
-using std::map;//needed for Hash like functionality.
-using std::pair;//needed to add to the map as a single command.
-using std::list;//used for the stack like functionality.
+using std::string;
+using std::unordered_map;
+using std::list;
+using std::pair;
+
+#include "cSymbol.h"
 
 class cSymbolTable
 {
     public:
-        /*******************************************
-         * Increase the Scope.
-         ******************************************/
-        void IncreaseScope()
-        {
-            m_cSymbolTable.push_front(map<string, cSymbol*>());//adding a new symbol table to the stack of tables.
-            m_scope++;//Increase the variable that tracks the current scope.
+        // Type for a single symbol table
+        typedef unordered_map<string, cSymbol *> symbolTable_t;
+
+        // Increasing the scope must create a symbol table, so we call
+        // that function to do the actual work of creating the object
+        cSymbolTable()
+        { 
+            IncreaseScope();
         }
-        /*******************************************
-         * Decrease the Scope.
-         ******************************************/
-        void DecreaseScope()
+
+        // Increase the scope: add a level to the nested symbol table
+        // Return value is the newly created scope
+        symbolTable_t *IncreaseScope()
         {
-            if(m_scope != 0)
-            {
-            m_cSymbolTable.pop_front();// remove top default table from the stack
-            m_scope--;// change the scope to match default table scope number.
-            }
-            else  
-                //error can't pop off of a empty list.
-                std::cout << "Error: can't Decrease Scope when in out most scope" << std::endl;
+            symbolTable_t *table = new symbolTable_t();
+            m_SymbolTable.push_front(table);
+
+            return table;
         }
-        /*******************************************
-         * Insert a symbol into the current Scope.
-         ******************************************/
-        cSymbol* Insert(char* yytext)
+
+        // Decrease the scope: remove the outer-most scope.
+        // Returned value is the outer-most scope AFTER the pop.
+        //
+        // NOTE: do NOT clean up memory after poping the table. Parts of the
+        // AST will probably contain pointers to symbols in the popped table.
+        symbolTable_t *DecreaseScope()
         {
-            cSymbol* temp; //pointer to a cSymbol
-            if (!(temp = Lookup(yytext)))//if the symbol doen't exist do below.
-            {
-                temp = new cSymbol(yytext);//create a new cSymbol with yytext.
-                m_cSymbolTable.front().insert(pair<string,cSymbol*>(yytext,temp));//goto default table front() and insert the new symbol into this table.
-            }
-            return temp;//return the cSymbol*
+            m_SymbolTable.pop_front();
+
+            return m_SymbolTable.front();
         }
-        /*******************************************
-         * Used to Lookup a symbol for current Scope.
-         ******************************************/
-        cSymbol* Lookup(char* yytext)
+
+        // insert a symbol into the table
+        // Assumes the symbol is not already in the table
+        void Insert(cSymbol *sym)
         {
-            map<string,cSymbol*>::iterator it;//create an iterator for my map.
-            it = m_cSymbolTable.front().find(yytext);//set that iterator equal to the default scope front() at the desired symbol yytext.
-            if (it != m_cSymbolTable.front().end())//make sure the scope is greater than zero.
+            pair<string, cSymbol*> new_val(sym->GetName(), sym);
+            m_SymbolTable.front()->insert(new_val);
+        }
+
+        // Do a lookup in the nested table. Return the symbol for the outer-most
+        // match. 
+        // Returns nullptr if no match is found.
+        cSymbol *Find(string name)
+        {
+            cSymbol *sym = nullptr;
+
+            list<symbolTable_t *>::iterator it = m_SymbolTable.begin();
+
+            while (it != m_SymbolTable.end())
             {
-                return it->second;//return the second element in the pair of elements which is the cSymbol pointer.
+                sym = FindInTable(*it, name);
+                if (sym != nullptr) return sym;
+
+                it++;
             }
 
-            return nullptr;//return nullptr if it doesn't exist in the table.
+            return nullptr;
         }
-        /*******************************************
-         * Used to Lookup a symbol for all Scopes.
-         ******************************************/
-        cSymbol* g_Lookup(char* yytext)
+
+        // Find a symbol in the inner-most scope.
+        // Returns nullptr if the symbol is not found.
+        cSymbol *FindLocal(string name)
         {
-            for(auto& i : m_cSymbolTable)//range based for loop
-            {
-                map<string,cSymbol*>::iterator it;//an iterator for my map.
-                it = i.find(yytext);//set it equal. 
-                if (it != i.end())//check that scope is greater than zero.
-                {
-                    return it->second;//return the second element in the pair of elements which is the cSymbol pointer.
-                }
-            }
-            return nullptr;//return nullptr if it doesn't exist throught the scopes of tables.
+            return FindInTable(m_SymbolTable.front(), name);
         }
-        /*******************************************
-         * Class members
-         ******************************************/
-        list<map<string, cSymbol*>> m_cSymbolTable;// A list of maps of pairs containing a string and a cSymbol pointers
-        int m_scope = 0;//a integer used to keep track of the current scope.    
+
+    protected:
+        // list of symbol tables. The list contains the different levels
+        // in the nested table.
+        list<symbolTable_t *> m_SymbolTable;
+
+        // Utility routine to do a lookup in a single level's table
+        // params are the table to do the lookup in and the name of the symbol
+        // Returns nullptr if the symbol isn't found.
+        cSymbol *FindInTable(symbolTable_t *table, string& name)
+        {
+            symbolTable_t::const_iterator got = table->find(name);
+
+            if (got == table->end())
+                return nullptr;
+            else
+                return got->second;
+        }
+
 };
 
-#endif
+// Declaration for the global symbol table.
+// Definition is in main.cpp
+extern cSymbolTable g_SymbolTable;

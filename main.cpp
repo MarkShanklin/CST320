@@ -1,80 +1,81 @@
 //**************************************
 // main.cpp
 //
-// Main routine for lang compiler.
-// This version only runs the lexer
+// Main function for lang compiler
 //
 // Author: Phil Howard 
 // phil.howard@oit.edu
 //
-// Date: Nov. 23, 2015
+// Date: Jan. 18, 2015
 //
-// ModifiedBy: Mark Shanklin
-// mark.shanklin@oit.edu
-//
-// Date: Jan. 19, 2016
-//
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
 #include <fstream>
-#include "cSymbol.h"
 #include "cSymbolTable.h"
 #include "lex.h"
-#include "tokens.h"
+#include "astnodes.h"
+#include "langparse.h"
 
-//definiton of global yylval
-yylval_t yylval;
-
+// define global variables
 cSymbolTable g_SymbolTable;
-long long cSymbol::nextId = 0;
+long long cSymbol::nextId;
 
+// takes two string args: input_file, and output_file
 int main(int argc, char **argv)
 {
+    std::cout << "Philip Howard" << std::endl;
+
     const char *outfile_name;
     int result = 0;
-    int token;
-
-    std::cout << "Mark Shanklin" << std::endl;
+    std::streambuf *cout_buf = std::cout.rdbuf();
 
     if (argc > 1)
     {
         yyin = fopen(argv[1], "r");
-        if (yyin == NULL)
+        if (yyin == nullptr)
         {
-            std::cerr << "Unable to open file " << argv[1] << "\n";
+            std::cerr << "ERROR: Unable to open file " << argv[1] << "\n";
             exit(-1);
         }
     }
 
     if (argc > 2)
+    {
         outfile_name = argv[2];
-    else
+    } else {
         outfile_name = "/dev/tty";
+    }
 
-    std::streambuf *cout_buf = std::cout.rdbuf();
     std::ofstream output(outfile_name);
-
     if (!output.is_open())
     {
-        std::cerr << "Unable to open output file " << outfile_name << "\n";
+        std::cerr << "ERROR: Unable to open file " << outfile_name << "\n";
         exit(-1);
     }
+
+    // fixup cout so it redirects to output
     std::cout.rdbuf(output.rdbuf());
 
-    output << "<program>\n";
-
-    token = yylex();
-    while (token != 0)
+    result = yyparse();
+    if (yyast_root != nullptr)
     {
-        // std::cout << token << ":" << yytext << "\n";
-        // if we found an identifier, print it out
-        if (token == IDENTIFIER) std::cout << yylval.symbol->ToString() << "\n";
-        token = yylex();
+        if (result == 0)
+        {
+            output << yyast_root->ToString() << std::endl;
+        } else {
+            output << yynerrs << " Errors in compile\n";
+        }
     }
 
-    output << "</program>\n";
+    if (result == 0 && yylex() != 0)
+    {
+        std::cout << "Junk at end of program\n";
+    }
 
+    // close output and fixup cout
+    // If these aren't done, you may get a segfault on program exit
     output.close();
     std::cout.rdbuf(cout_buf);
 

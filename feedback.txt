@@ -1,1 +1,14 @@
-Lab1 Feedback
+Lab3 Feedback
+
+This feedback file should have contained the feedback from Lab 1. It didn't.
+
+-2 Your git repository contains intermediate files. It should only contain source.
+
+-1 Your indentation was not consistent. Sometimes you indented inside curlies and sometimes you didn't.
+
+In DecreaseScope you print an error if you try to decrease past zero. Yes, it's good to check for error conditions, but as you'll see in the coming labs, error checking is a bit more complicated. Starting in Lab 4, the parser will be changing scope, not the scanner. The parser will trigger a syntax error in any case where scope would have been decreased below zero, so in that sense, it "can't happen". Also, if such an error did occur, the parser needs to know about it so that it can tell main() that errors occurred so later stages of compilation won't happen. We'll deal with those kinds of issues in Lab 5.
+
+-1 The data members should be protected or private, not public.
+
+Rather than maintaining an instance variable for the scope depth, you should just check the size of the list<>.
+

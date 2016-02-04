@@ -54,6 +54,7 @@
 %token <int_val>   CHAR_VAL
 %token <int_val>   INT_VAL
 %token <float_val> FLOAT_VAL
+%token <int_val>   EQUALS
 
 %token  PRINT
 %token  WHILE IF ELSE ENDIF
@@ -83,6 +84,7 @@
 %type <param_list_node> params
 %type <expr_node> param
 %type <expr_node> expr
+%type <expr_node> addit
 %type <expr_node> term
 %type <expr_node> fact
 %type <var_expr_node> varref 
@@ -121,24 +123,47 @@ var_decl:   STRUCT IDENTIFIER IDENTIFIER { $$ = new cVarDeclNode($2, $3); }
 struct_decl:  STRUCT open decls close IDENTIFIER    
                                 { $$ = new cStructDeclNode($3, $5); }
 func_decl:  func_header ';'
-                                { $$ = $1; g_SymbolTable.DecreaseScope(); }
+                                { 
+                                    $$ = $1; 
+                                    g_SymbolTable.DecreaseScope(); 
+                                }
         |   func_header  '{' decls stmts '}'
-                                { $$ = $1; $$->AddDeclsNode($3); $$->AddStmtsNode($4); g_SymbolTable.DecreaseScope(); }
+                                { 
+                                    $$ = $1; 
+                                    $$->AddDeclsNode($3); 
+                                    $$->AddStmtsNode($4); 
+                                    g_SymbolTable.DecreaseScope(); 
+                                }
         |   func_header  '{' stmts '}'
-                                { $$ = $1; $$->AddStmtsNode($3); g_SymbolTable.DecreaseScope(); }
+                                { 
+                                    $$ = $1; $$->AddStmtsNode($3); 
+                                    g_SymbolTable.DecreaseScope(); 
+                                }
 func_header: func_prefix paramsspec ')'
-                                { $$ = $1; $$->AddParamsNode($2); }
+                                { 
+                                    $$ = $1; 
+                                    $$->AddParamsNode($2); 
+                                }
         |    func_prefix ')'    { $$ = $1; }
 func_prefix: TYPE_ID IDENTIFIER '('
-                                { $$ = new cFuncDeclNode($1,$2); g_SymbolTable.IncreaseScope(); }
+                                { 
+                                    $$ = new cFuncDeclNode($1,$2); 
+                                    g_SymbolTable.IncreaseScope(); 
+                                }
 paramsspec:     
             paramsspec',' paramspec 
-                                { $$ = $1; $$->Insert($3); }
+                                { 
+                                    $$ = $1; 
+                                    $$->Insert($3); 
+                                }
         |   paramspec           { $$ = new cParamsNode($1); }
 
 paramspec:  var_decl            { $$ = $1; }
 
-stmts:      stmts stmt          { $$ = $1; $$->Insert($2); }
+stmts:      stmts stmt          { 
+                                    $$ = $1; 
+                                    $$->Insert($2); 
+                                }
         |   stmt                { $$ = new cStmtsNode($1); }
 
 stmt:       IF '(' expr ')' stmts ENDIF ';'
@@ -160,20 +185,29 @@ stmt:       IF '(' expr ')' stmts ENDIF ';'
 func_call:  IDENTIFIER '(' params ')' { $$ = new cFuncExprNode($1, $3); }
         |   IDENTIFIER '(' ')'  { $$ = new cFuncExprNode($1, nullptr); }
 
-varref:   varref '.' varpart    { $$ = $1; $1->Insert($3); }
+varref:   varref '.' varpart    { 
+                                    $$ = $1; 
+                                    $1->Insert($3); 
+                                }
         | varpart               { $$ = new cVarExprNode($1); }
 
 varpart:  IDENTIFIER            { $$ = $1; }
 
 lval:     varref                { $$ = $1; }
 
-params:     params',' param     { $$ = $1; $$->Insert($3); }
+params:     params',' param     { 
+                                    $$ = $1; 
+                                    $$->Insert($3); 
+                                }
         |   param               { $$ = new cParamListNode($1); }
 
 param:      expr                { $$ = $1; }
 
-expr:       expr '+' term       { $$ = new cBinaryExprNode($1, '+', $3); }
-        |   expr '-' term       { $$ = new cBinaryExprNode($1, '-', $3); }
+expr:       expr EQUALS addit   { $$ = new cBinaryExprNode($1, $2, $3); }
+        |   addit               { $$ = $1; }
+
+addit:      addit '+' term      { $$ = new cBinaryExprNode($1, '+', $3); }
+        |   addit '-' term      { $$ = new cBinaryExprNode($1, '-', $3); }
         |   term                { $$ = $1; }
 
 term:       term '*' fact       { $$ = new cBinaryExprNode($1, '*', $3); }
@@ -183,7 +217,7 @@ term:       term '*' fact       { $$ = new cBinaryExprNode($1, '*', $3); }
 
 fact:       '(' expr ')'        { $$ = $2; }
         |   INT_VAL             { $$ = new cIntExprNode($1); }
-        |   FLOAT_VAL           { $$ = new cFloatExprNode($1);}
+        |   FLOAT_VAL           { $$ = new cFloatExprNode($1); }
         |   varref              { $$ = $1; }
 
 %%

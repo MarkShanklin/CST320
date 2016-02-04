@@ -23,7 +23,7 @@ class cBinaryExprNode : public cExprNode
         //param1 is the pointer of the first child node.
         //param2 is the char of the binary operator.
         //param3 is the pointer of the second child node.
-        cBinaryExprNode(cExprNode *childOne, char binaryOp, cExprNode *childTwo) : cExprNode()
+        cBinaryExprNode(cExprNode *childOne, int binaryOp, cExprNode *childTwo) : cExprNode()
         {
             AddChild(childOne);
 

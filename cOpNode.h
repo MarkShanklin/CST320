@@ -15,18 +15,15 @@
 class cOpNode : public cAstNode
 {
     public:
-        cOpNode(char op) : cAstNode()
+        cOpNode(int op) : cAstNode()
         {
             m_op = op;
         }
 
         virtual string NodeType()       { return "op"; }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
-        virtual string AttributesToString()   
-        { 
-            return string(" value='") + m_op + "'";
-        }
+        virtual string AttributesToString();
     protected:
-        char m_op;      // the operand
+        int m_op;      // the operand
 };
 

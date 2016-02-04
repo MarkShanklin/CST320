@@ -13,8 +13,8 @@ COPTS=-Wall -g -c  -O0 -std=c++11
 OBJS=main.o \
 	 langlex.o \
 	 langparse.o \
-	 cVisitor.o
-
+	 cVisitor.o \
+	 cOpNode.o
 all: lang
 
 clean:

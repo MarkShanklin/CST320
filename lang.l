@@ -66,8 +66,6 @@ whitespace      '[\t\n\r ]'
 "struct"                    DO_RETURN(STRUCT);
 "return"                    DO_RETURN(RETURN);
 [a-zA-Z_][a-zA-Z0-9_]*      { 
-                              // NOTE: this code will have to be changed
-                              // as part of this lab
                               yylval.symbol = g_SymbolTable.Find(yytext);
                               if (yylval.symbol == nullptr)
                               {
@@ -83,7 +81,10 @@ whitespace      '[\t\n\r ]'
                                 yylval.float_val = atof(yytext);
                                 DO_RETURN(FLOAT_VAL);
                             }
-"=="                        DO_RETURN(EQUALS);
+"=="                        {
+                                yylval.int_val = EQUALS;
+                                DO_RETURN(EQUALS);
+                            }                              
 "&&"                        DO_RETURN(AND);
 "||"                        DO_RETURN(OR);
 "//".*"\n"                  ;   /* Ignore comments */

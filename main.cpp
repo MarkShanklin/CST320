@@ -8,6 +8,11 @@
 //
 // Date: Jan. 18, 2015
 //
+// Modified By: Mark Shanklin
+// mark.shanklin@oit.edu
+//
+// Date: Jan. 26, 2016
+//
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -25,7 +30,9 @@ long long cSymbol::nextId;
 // takes two string args: input_file, and output_file
 int main(int argc, char **argv)
 {
-    std::cout << "Philip Howard" << std::endl;
+    std::cout << "Mark Shanklin" << std::endl;
+    
+    g_SymbolTable.initGlobalTable();
 
     const char *outfile_name;
     int result = 0;

@@ -8,7 +8,7 @@
 // Author: Phil Howard 
 // phil.howard@oit.edu
 //
-// Date: Jan. 26, 2016
+// Date: Jan. 18, 2016
 //
 
 #include <string>
@@ -22,6 +22,7 @@ using std::list;
 using std::pair;
 
 #include "cSymbol.h"
+#include "cBaseTypeNode.h"
 
 class cSymbolTable
 {
@@ -86,24 +87,31 @@ class cSymbolTable
             return nullptr;
         }
 
-        // Find a symbol in the inner-most scope.
+        // Find a symbol in the outer-most scope.
         // Returns nullptr if the symbol is not found.
         cSymbol *FindLocal(string name)
         {
             return FindInTable(m_SymbolTable.front(), name);
         }
 
-        void initGlobalTable()
+        // Initialize the root symbol table. 
+        // This must be called on the table representing the outer most scope.
+        void InitRootTable()
         {
-            Insert(new cSymbol("char"));
-            Insert(new cSymbol("int"));
-            Insert(new cSymbol("float"));
-        }
-    protected:
-        // list of symbol tables. The list contains the different levels
-        // in the nested table.
-        list<symbolTable_t *> m_SymbolTable;
+            cSymbol *baseType;
 
+            baseType = new cSymbol("char");
+            baseType->SetDecl(new cBaseTypeNode("char",1,false));
+            Insert(baseType);
+
+            baseType = new cSymbol("int");
+            baseType->SetDecl(new cBaseTypeNode("int",4,false));
+            Insert(baseType);
+
+            baseType = new cSymbol("float");
+            baseType->SetDecl(new cBaseTypeNode("float",8,true));
+            Insert(baseType);
+        }
         // Utility routine to do a lookup in a single level's table
         // params are the table to do the lookup in and the name of the symbol
         // Returns nullptr if the symbol isn't found.
@@ -116,9 +124,11 @@ class cSymbolTable
             else
                 return got->second;
         }
-
+    protected:
+        // list of symbol tables. The list contains the different levels
+        // in the nested table.
+        list<symbolTable_t *> m_SymbolTable;
 };
-
 // Declaration for the global symbol table.
 // Definition is in main.cpp
 extern cSymbolTable g_SymbolTable;

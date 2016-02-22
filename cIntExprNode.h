@@ -10,11 +10,12 @@
 // Author: Phil Howard 
 // phil.howard@oit.edu
 //
-// Date: Jan. 18, 2015
+// Date: Jan. 18, 2016
 //
 
 #include "cAstNode.h"
 #include "cExprNode.h"
+#include "cDeclNode.h"
 
 class cIntExprNode : public cExprNode
 {
@@ -28,6 +29,11 @@ class cIntExprNode : public cExprNode
         virtual string AttributesToString() 
         {
             return " value=\"" + std::to_string(m_value) + "\"";
+        }
+        virtual cDeclNode*  GetType()
+        {
+            cSymbol* type = dynamic_cast<cSymbol*>(m_children.front());
+            return type->GetDecl();
         }
         virtual string NodeType() { return string("int"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }

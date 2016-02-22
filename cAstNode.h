@@ -7,7 +7,7 @@
 // Author: Phil Howard 
 // phil.howard@oit.edu
 //
-// Date: Jan. 7, 2016
+// Date: Jan. 18, 2016
 //
 
 #include <string>
@@ -16,6 +16,8 @@ using std::string;
 using std::vector;
 
 #include "cVisitor.h"
+
+extern void SemanticError(string);
 
 class cAstNode
 {

@@ -8,8 +8,12 @@
 // Author: Phil Howard 
 // phil.howard@oit.edu
 //
-// Date: Jan. 18, 2015
+// Date: Jan. 18, 2016
 //
+// Modified By: Mark Shanklin
+// mark.shanklin@oit.edu
+//
+// Date Mod: Feb. 20, 2016
 
 #include <string>
 
@@ -37,10 +41,19 @@ class cSymbol : public cAstNode
             result += "\" name=\"" + m_name + "\"";
             return result;
         }
+        void SetDecl(cDeclNode* decl)
+        {
+            m_decl = decl;
+        }
+        cDeclNode* GetDecl()
+        {
+            return m_decl;
+        }
         virtual string NodeType() { return string("sym"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
     protected:
         static long long nextId;        // Next avail symbol ID
         long long m_id;                 // Unique ID for this symbol
         string m_name;                  // name of symbol
+        cDeclNode* m_decl;              // DeclNode pointer
 };

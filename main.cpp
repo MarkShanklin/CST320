@@ -6,12 +6,12 @@
 // Author: Phil Howard 
 // phil.howard@oit.edu
 //
-// Date: Jan. 18, 2015
+// Date: Jan. 18, 2016
 //
 // Modified By: Mark Shanklin
 // mark.shanklin@oit.edu
 //
-// Date: Jan. 26, 2016
+// Modified Date: Feb. 15, 2016
 //
 
 #include <stdio.h>
@@ -31,8 +31,6 @@ long long cSymbol::nextId;
 int main(int argc, char **argv)
 {
     std::cout << "Mark Shanklin" << std::endl;
-    
-    g_SymbolTable.initGlobalTable();
 
     const char *outfile_name;
     int result = 0;
@@ -65,11 +63,14 @@ int main(int argc, char **argv)
     // fixup cout so it redirects to output
     std::cout.rdbuf(output.rdbuf());
 
+    g_SymbolTable.InitRootTable();
+
     result = yyparse();
     if (yyast_root != nullptr)
     {
         if (result == 0)
         {
+            //yyast_root->SemanticAnalysis();
             output << yyast_root->ToString() << std::endl;
         } else {
             output << yynerrs << " Errors in compile\n";

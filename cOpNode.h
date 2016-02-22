@@ -11,6 +11,7 @@
 //
 
 #include "cAstNode.h"
+#include "langparse.h"
 
 class cOpNode : public cAstNode
 {
@@ -22,7 +23,30 @@ class cOpNode : public cAstNode
 
         virtual string NodeType()       { return "op"; }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
-        virtual string AttributesToString();
+        virtual string AttributesToString()   
+        { 
+            string result(" value='");
+
+            switch (m_op)
+            {
+                case EQUALS:
+                    result += "==";
+                    break;
+                case OR:
+                    result += "||";
+                    break;
+                case AND:
+                    result += "&&";
+                    break;
+                default:
+                    result += (char)m_op;
+                    break;
+            }
+
+            result += "'";
+
+            return result;
+        }
     protected:
         int m_op;      // the operand
 };

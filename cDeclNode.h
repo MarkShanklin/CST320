@@ -8,7 +8,7 @@
 // Author: Phil Howard 
 // phil.howard@oit.edu
 //
-// Date: Jan. 18, 2015
+// Date: Jan. 18, 2016
 //
 
 #include "cAstNode.h"
@@ -17,4 +17,8 @@ class cDeclNode : public cAstNode
 {
     public:
         cDeclNode() : cAstNode() {}
+        virtual bool isStruct(){ return false; }
+        virtual bool isFloat(){ return false; }
+        virtual int GetSize() = 0; 
+        virtual cDeclNode* GetType() = 0;
 };

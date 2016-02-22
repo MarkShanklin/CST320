@@ -1,38 +1,38 @@
 #pragma once
-/*******************************************
- * cBinaryExprNode.h
- *
- * Defines an AST node for an Binary ...
- *
- * Inherits from cExprNode so that the Binary Expr constants can be used anywhere
- *
- * expressions are used.
- *
- * Author: Mark Shanklin
- * mark.shanklin@oit.edu
- *
- * Date: Feb. 02 2016
- ******************************************/
+//**************************************
+// cBinaryExprNode.h
+//
+// Defines AST node for binary expressions.
+// Inherits from cExprNode
+//
+// Author: Phil Howard 
+// phil.howard@oit.edu
+//
+// Date: Jan. 18, 2016
+//
 
 #include "cAstNode.h"
 #include "cExprNode.h"
+#include "cOpNode.h"
+#include "cDeclNode.h"
 
 class cBinaryExprNode : public cExprNode
 {
     public:
-        //param1 is the pointer of the first child node.
-        //param2 is the char of the binary operator.
-        //param3 is the pointer of the second child node.
-        cBinaryExprNode(cExprNode *childOne, int binaryOp, cExprNode *childTwo) : cExprNode()
+        // params are the left and right expressions and the operation.
+        // The operation is a char: '+', '-', etc.
+        cBinaryExprNode(cExprNode *left, int op, cExprNode *right)
+            : cExprNode()
         {
-            AddChild(childOne);
-
-            cOpNode *op = new cOpNode(binaryOp);
-            
-            AddChild(op);
-
-            AddChild(childTwo);
+            AddChild(left);
+            AddChild(new cOpNode(op));
+            AddChild(right);
         }
-        virtual string NodeType() { return string("expr");}
+        virtual cDeclNode* GetType()
+        {
+            cSymbol* type = dynamic_cast<cSymbol*>(m_children.front());
+            return type->GetDecl();
+        }
+        virtual string NodeType() { return string("expr"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
 };

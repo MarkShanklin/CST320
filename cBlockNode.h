@@ -10,10 +10,11 @@
 // Author: Phil Howard 
 // phil.howard@oit.edu
 //
-// Date: Jan. 18, 2015
+// Date: Jan. 18, 2016
 //
 
 #include "cAstNode.h"
+#include "cDeclsNode.h"
 #include "cStmtNode.h"
 #include "cStmtsNode.h"
 
@@ -21,7 +22,7 @@ class cBlockNode : public cStmtNode
 {
     public:
         // params are the decls and statements contained in the block
-        cBlockNode(cAstNode *decls, cStmtsNode *statements)
+        cBlockNode(cDeclsNode *decls, cStmtsNode *statements)
             : cStmtNode()
         {
             AddChild(decls);

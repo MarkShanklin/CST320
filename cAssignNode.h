@@ -1,27 +1,31 @@
 #pragma once
-/*******************************************
- * cAssignNode.h
- *
- * Defines AST node for assignment expressions
- *
- * Author: Mark Shanklin
- * mark.shanklin@oit.edu
- *
- * Date: Feb. 02, 2016
- ******************************************/
+//**************************************
+// cAssignNode.h
+//
+// Defines AST node for assignment statments
+//
+// Author: Phil Howard 
+// phil.howard@oit.edu
+//
+// Date: Jan. 18, 2016
+//
 
 #include "cAstNode.h"
-#include "cVarExprNode.h"
+#include "cStmtNode.h"
 #include "cExprNode.h"
+#include "cVarExprNode.h"
 
-class cAssignNode : public cExprNode
+class cAssignNode : public cStmtNode
 {
     public:
-        cAssignNode(cVarExprNode *varExpr, cExprNode *expr)
+        // params are the lval and the expression
+        cAssignNode(cVarExprNode *lval, cExprNode *expr)
+            : cStmtNode()
         {
-            AddChild(varExpr);
+            AddChild(lval);
             AddChild(expr);
         }
-    virtual string NodeType() { return string("assign"); }
-    virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
+
+        virtual string NodeType() { return string("assign"); }
+        virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
 };

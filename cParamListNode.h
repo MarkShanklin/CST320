@@ -1,27 +1,34 @@
 #pragma once
-/*******************************************
- * cParamListNode.h
- *
- * Author: Mark Shanklin
- * mark.shanklin@oit.edu
- *
- * Date: Feb. 03, 2016
- ******************************************/
+//**************************************
+// cParamListNode.h
+//
+// Defines AST node for actual params passed to a function
+//
+// Author: Phil Howard 
+// phil.howard@oit.edu
+//
+// Date: Jan. 18, 2016
+//
 
 #include "cAstNode.h"
 #include "cExprNode.h"
 
-class cParamListNode : public cExprNode
+class cParamListNode : public cAstNode
 {
     public:
-        cParamListNode(cExprNode *params)
+        // param is first actual param passed to function
+        cParamListNode(cExprNode *param)
+            : cAstNode()
         {
-            AddChild(params);
+            AddChild(param);
         }
-        void Insert(cExprNode *params)
+
+        // add the next actual param
+        void Insert(cExprNode *param)
         {
-            AddChild(params);
+            AddChild(param);
         }
+
         virtual string NodeType() { return string("params"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
 };

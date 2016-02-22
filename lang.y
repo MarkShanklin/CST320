@@ -60,7 +60,7 @@
 %token  WHILE IF ELSE ENDIF
 %token  STRUCT
 %token  RETURN
-%token  AND OR EQUALS
+%token  AND OR
 %token  JUNK_TOKEN
 
  /* NOTE: you will have to change some of these as you complete your lab */

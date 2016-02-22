@@ -1,3 +1,14 @@
+**************************************************
+Lab 4 Feedback
+
+-5 Your git repository contained intermediate files. It should only contain source.
+
+-5 bison gave a warning that you should have fixed.
+
+-2 You edited some of the files I supplied (such as lang.y), so you should update the comment header to indicate this.
+
+
+**************************************************
 Lab3 Feedback
 
 This feedback file should have contained the feedback from Lab 1. It didn't.

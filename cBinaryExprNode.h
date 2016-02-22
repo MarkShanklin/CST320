@@ -35,8 +35,14 @@ class cBinaryExprNode : public cExprNode
         }
         virtual cDeclNode* GetType()
         {
-            cSymbol* type = dynamic_cast<cSymbol*>(m_children.front());
-            return type->GetDecl();
+            cDeclNode* left = ((cExprNode*)GetChild(0))->GetType();
+            cDeclNode* right = ((cExprNode*)GetChild(2))->GetType();
+            
+            if((right->isFloat()) || (right->isInt()))
+            {
+                return right;
+            }
+            return left;
         }
         virtual string NodeType() { return string("expr"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }

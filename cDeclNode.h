@@ -22,8 +22,11 @@ class cDeclNode : public cAstNode
 {
     public:
         cDeclNode() : cAstNode() {}
+        virtual bool isVar(){ return false; }
         virtual bool isStruct(){ return false; }
         virtual bool isFloat(){ return false; }
-        virtual int GetSize() = 0; 
+        virtual bool isInt(){ return false; }
+        virtual string GetName(){ return nullptr; }        
+        virtual int GetSize() = 0;
         virtual cDeclNode* GetType() = 0;
 };

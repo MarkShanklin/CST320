@@ -35,9 +35,9 @@ class cFloatExprNode : public cExprNode
         }
         virtual cDeclNode* GetType()
         {
-            cSymbol* type = dynamic_cast<cSymbol*>(m_children.front());
-            return type->GetDecl();
-        }   
+            return g_SymbolTable.Find("float")->GetDecl();
+        }
+
         virtual string NodeType() { return string("float"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
     protected:

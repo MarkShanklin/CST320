@@ -28,9 +28,14 @@ class cVarExprNode : public cExprNode
         cVarExprNode(cSymbol *name)
             : cExprNode()
         {
-            AddChild(name);
             if (!g_SymbolTable.Find(name->GetName()))
+            {
                 SemanticError("Symbol " + name->GetName() + " not defined");
+            }
+            else
+            {
+                AddChild(name);
+            }   
         }
 
         // called for the fields in struct refs
@@ -50,9 +55,14 @@ class cVarExprNode : public cExprNode
                     {
                         SemanticError(name->GetName() + " is not a field of " + GetName());
                     }
-                AddChild(element);
+                    else
+                    {
+                        AddChild(element);
+                    }
             }
+           // AddChild(name);
         }
+
         cDeclNode* GetDecl()
         {
             cSymbol* type = dynamic_cast<cSymbol*>(m_children.back());

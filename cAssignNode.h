@@ -22,8 +22,49 @@ class cAssignNode : public cStmtNode
         cAssignNode(cVarExprNode *lval, cExprNode *expr)
             : cStmtNode()
         {
-            AddChild(lval);
-            AddChild(expr);
+            bool allowed = true;
+            cDeclNode* lvalType = lval->GetType();
+            cDeclNode* exprType = expr->GetType();
+            cDeclNode* charDecl = g_SymbolTable.Find("char")->GetDecl();
+            
+            if(lvalType == exprType)
+            {
+                allowed = true;
+            }
+            else
+            {
+                if(lvalType->isStruct() && exprType->isStruct())
+                {
+                    allowed = false;
+                }
+                else if(exprType->isFloat() && lvalType->isInt())
+                {
+                    allowed = false;
+                }
+                else if(lvalType == charDecl && exprType != charDecl)
+                {
+                    allowed = false;
+                }
+                else if(lvalType->isStruct() && exprType->isInt())
+                {
+                    allowed = false;
+                }
+                else if(lvalType->isInt() && exprType->isStruct())
+                {
+                    allowed = false;
+                }
+            }
+
+            if(allowed == true)
+            {
+                AddChild(lval);
+                AddChild(expr);
+            }
+            else
+            {
+                string err = "Cannot assign " + exprType->GetName() + " to " + lvalType->GetName();
+                SemanticError("test");
+            }
         }
 
         virtual string NodeType() { return string("assign"); }

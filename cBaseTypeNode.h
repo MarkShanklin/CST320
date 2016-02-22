@@ -17,10 +17,9 @@ class cBaseTypeNode : public cDeclNode
             m_is_float = is_float;
         }
         virtual bool isVar(){ return false; }
-        virtual bool isFunc(){ return false; }
-        virtual bool isFuncCall(){ return false; }
         virtual bool isStruct(){ return false; }
         virtual bool isFloat(){ return m_is_float; }
+        virtual bool isInt(){ return !m_is_float; }
         virtual int GetSize(){ return m_size; }
         virtual string GetName(){ return m_name; }
         virtual cDeclNode* GetType(){ return this; }    

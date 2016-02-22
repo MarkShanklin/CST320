@@ -57,15 +57,14 @@ class cFuncDeclNode : public cDeclNode
             AddChild(stmts);
             m_isDefinition = true;
         }
-        int GetSize()
+        virtual int GetSize()
         {
-            //cSymbol* size = dynamic_cast
-            //return size->GetDecl()->GetSize();
             return 0;
         }
         cDeclNode* GetType()
         {
-            return this;
+            cSymbol* type = dynamic_cast<cSymbol*>(m_children.front());
+            return type->GetDecl();
         }
 
         virtual string NodeType() { return string("func"); }

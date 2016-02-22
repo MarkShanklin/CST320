@@ -37,8 +37,14 @@ class cIntExprNode : public cExprNode
         }
         virtual cDeclNode*  GetType()
         {
-            cSymbol* type = dynamic_cast<cSymbol*>(m_children.front());
-            return type->GetDecl();
+            if((m_value >= -128) && (m_value <= 127))
+            {
+                return g_SymbolTable.Find("char")->GetDecl();
+            }
+            else
+            {
+                return g_SymbolTable.Find("int")->GetDecl();
+            }
         }
         virtual string NodeType() { return string("int"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }

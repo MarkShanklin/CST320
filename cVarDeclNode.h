@@ -39,11 +39,11 @@ class cVarDeclNode : public cDeclNode
             {
                 var_id = new cSymbol(var_id->GetName());
             }
-            var_id->SetDecl(this);
             // Insert into the global symbol table
             g_SymbolTable.Insert(var_id);
 
             AddChild(var_id);
+            var_id->SetDecl(this);
         }
         virtual int GetSize()
         {
@@ -53,6 +53,10 @@ class cVarDeclNode : public cDeclNode
         {
            cSymbol* type = dynamic_cast<cSymbol*>(m_children.front());
            return type->GetDecl();
+        }
+        virtual bool isVar()
+        {
+            return true;
         }
         virtual string NodeType() { return string("var_decl"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }

@@ -53,11 +53,11 @@ class cStructDeclNode : public cDeclNode
                 {
                     name = new cSymbol(struct_id->GetName());
                 }
-                name->SetDecl(this);
                 // insert the name of the struct into the global symbol table
                 g_SymbolTable.Insert(name);
             }
             AddChild(name);
+            name->SetDecl(this);
         }
         virtual bool isStruct()
         {
@@ -75,7 +75,11 @@ class cStructDeclNode : public cDeclNode
         {
             return g_SymbolTable.FindInTable(m_symTbl, name);
         }
-
+        virtual string GetName()
+        {
+            cSymbol* symbol = dynamic_cast<cSymbol*>(m_children.back());
+            return symbol->GetName();
+        }
         virtual string NodeType() { return string("struct_decl"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
     protected:

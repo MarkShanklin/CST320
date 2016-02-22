@@ -122,8 +122,8 @@ decl:       var_decl ';'        { $$ = $1; }
         |   func_decl           { $$ = $1; }
         |   error ';'           {}
 
-var_decl:   TYPE_ID IDENTIFIER  { $$ = new cVarDeclNode($1, $2); }
-var_decl:   STRUCT IDENTIFIER IDENTIFIER  { $$ = new cVarDeclNode($2, $3); }
+var_decl:   TYPE_ID IDENTIFIER  { $$ = new cVarDeclNode($1, $2); PROP_ERROR(); }
+var_decl:   STRUCT IDENTIFIER IDENTIFIER  { $$ = new cVarDeclNode($2, $3); PROP_ERROR(); }
 struct_decl:  STRUCT open decls close IDENTIFIER    
                                 { $$ = new cStructDeclNode($2, $3, $5); PROP_ERROR(); }
 func_decl:  func_header ';'
@@ -167,7 +167,7 @@ stmt:       IF '(' expr ')' stmts ENDIF ';'
                                 { $$ = new cWhileNode($3, $5); }
         |   PRINT '(' expr ')' ';'
                                 { $$ = new cPrintNode($3); }
-        |   lval '=' expr ';'   { $$ = new cAssignNode($1, $3); }
+        |   lval '=' expr ';'   { $$ = new cAssignNode($1, $3); CHECK_ERROR(); }
         |   lval '=' func_call ';'   { $$ = new cAssignNode($1, $3); }
         |   func_call ';'       { $$ = $1; }
         |   block               { $$ = $1; }
@@ -178,7 +178,7 @@ func_call:  IDENTIFIER '(' params ')' { $$ = new cFuncExprNode($1, $3); }
         |   IDENTIFIER '(' ')'  { $$ = new cFuncExprNode($1, nullptr); }
 
 varref:   varref '.' varpart    { $$ = $1; $$->AddElement($3); PROP_ERROR(); }
-        | varpart               { $$ = new cVarExprNode($1); }
+        | varpart               { $$ = new cVarExprNode($1); PROP_ERROR(); }
 
 varpart:  IDENTIFIER            { $$ = $1; }
 

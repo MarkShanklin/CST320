@@ -11,6 +11,11 @@
 //
 // Date: Jan. 18, 2016
 //
+// Modified By: Mark Shanklin
+// mark.shanklin@oit.edu
+//
+// Mod Date: Feb. 21, 2016
+//
 
 #include "cSymbol.h"
 #include "cAstNode.h"
@@ -61,11 +66,11 @@ class cVarExprNode : public cExprNode
         string GetName()
         {
             string name = "";
-            for(unsigned int i = 0; i < m_children.size(); i++)
+            for(int i = 0; i < NumChildren(); i++)
             {
                 cSymbol* temp = dynamic_cast<cSymbol*>(m_children[i]);
                 name += temp->GetName();
-                if(i < m_children.size()-1)
+                if(i < (NumChildren() - 1))
                 {
                     name += ".";
                 }

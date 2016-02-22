@@ -9,6 +9,11 @@
 // phil.howard@oit.edu
 //
 // Date: Jan. 18, 2016
+// 
+// Modified By: Mark Shanklin
+// mark.shanklin@oit.edu
+//
+// Date: Feb. 21, 2016
 //
 
 #include <string>

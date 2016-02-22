@@ -8,6 +8,11 @@
 // phil.howard@oit.edu
 //
 // Date: Jan. 18, 2016
+// 
+// Modified By: Mark Shanklin
+// mark.shanklin@oit.edu
+//
+// Mod Date: Feb. 21, 2016
 //
 
 #include "cAstNode.h"

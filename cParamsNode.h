@@ -7,7 +7,7 @@
 // Author: Phil Howard 
 // phil.howard@oit.edu
 //
-// Date: Jan. 18, 2016
+// Date: Nov. 28, 2015
 //
 
 #include "cAstNode.h"
@@ -23,4 +23,5 @@ class cParamsNode : public cDeclsNode
 
         // return the XML node name
         virtual string NodeType() { return string("args"); }
+        virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
 };

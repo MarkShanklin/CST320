@@ -6,12 +6,7 @@
 // Author: Phil Howard 
 // phil.howard@oit.edu
 //
-// Date: Jan. 18, 2016
-//
-// Modified By: Mark Shanklin
-// mark.shanklin@oit.edu
-//
-// Modified Date: Feb. 15, 2016
+// Date: Nov. 28, 2015
 //
 
 #include <stdio.h>
@@ -30,7 +25,7 @@ long long cSymbol::nextId;
 // takes two string args: input_file, and output_file
 int main(int argc, char **argv)
 {
-    std::cout << "Mark Shanklin" << std::endl;
+    std::cout << "Philip Howard" << std::endl;
 
     const char *outfile_name;
     int result = 0;
@@ -70,7 +65,6 @@ int main(int argc, char **argv)
     {
         if (result == 0)
         {
-            //yyast_root->SemanticAnalysis();
             output << yyast_root->ToString() << std::endl;
         } else {
             output << yynerrs << " Errors in compile\n";

@@ -9,13 +9,10 @@
 // Author: Phil Howard 
 // phil.howard@oit.edu
 //
-// Date: Jan. 18, 2016
+// Date: Nov. 29, 2015
 //
-// Modified By: Mark Shanklin
-// mark.shanklin@oit.edu
-//
-// Mod Date: Feb. 21, 2016
-//
+
+#include <assert.h>
 
 #include "cSymbol.h"
 #include "cAstNode.h"
@@ -28,66 +25,87 @@ class cVarExprNode : public cExprNode
         cVarExprNode(cSymbol *name)
             : cExprNode()
         {
-            if (!g_SymbolTable.Find(name->GetName()))
+            cSymbol *sym = g_SymbolTable.Find(name->GetName());
+            if (sym == nullptr)
             {
-                SemanticError("Symbol " + name->GetName() + " not defined");
+                string error("");
+                error += "Symbol " + name->GetName() + " not defined";
+                SemanticError(error);
             }
-            else
-            {
-                AddChild(name);
-            }   
+
+            AddChild(name);
         }
 
         // called for the fields in struct refs
         void AddElement(cSymbol *name)
-        { 
-            cSymbol* lastChild = dynamic_cast<cSymbol*>(m_children.back());
+        {
+            cSymbol* sym;
+            sym = dynamic_cast<cSymbol*>(m_children.back());
 
-            if(!lastChild->GetDecl()->GetType()->isStruct())
+            if (sym->GetDecl()->GetType()->IsStruct())
             {
-                SemanticError(GetName() + " is not a struct");
+                cStructDeclNode *decl;
+                decl = dynamic_cast<cStructDeclNode *>(sym->GetDecl()->GetType());
+                assert(decl != nullptr);
+
+                cSymbol* field = decl->GetField(name->GetName());
+                if (field != nullptr)
+                {
+                    AddChild(field);
+                }
+                else
+                {
+                    SemanticError( name->GetName() + " is not a field of " +
+                            GetName());
+                }
             }
             else
             {
-                cStructDeclNode* structdecl = dynamic_cast<cStructDeclNode*>(lastChild->GetDecl()->GetType());
-                cSymbol* element = structdecl->GetElement(name->GetName()); 
-                    if(element == nullptr)
-                    {
-                        SemanticError(name->GetName() + " is not a field of " + GetName());
-                    }
-                    else
-                    {
-                        AddChild(element);
-                    }
+                SemanticError( GetName() + " is not a struct" );
             }
-           // AddChild(name);
         }
 
-        cDeclNode* GetDecl()
+        // return a string representation of the name of the var
+        virtual string GetName()
         {
-            cSymbol* type = dynamic_cast<cSymbol*>(m_children.back());
-            return type->GetDecl();
-        }
-        virtual cDeclNode* GetType()
-        {
-            cSymbol* type = dynamic_cast<cSymbol*>(m_children.front());
-            return type->GetDecl();
-        }
-        string GetName()
-        {
-            string name = "";
-            for(int i = 0; i < NumChildren(); i++)
+            string name("");
+            cSymbol* sym;
+            cAstNode::iterator it = FirstChild();
+
+            sym = dynamic_cast<cSymbol*>(*it);
+
+            name += sym->GetName();
+
+            for (it++; it != LastChild(); it++)
             {
-                cSymbol* temp = dynamic_cast<cSymbol*>(m_children[i]);
-                name += temp->GetName();
-                if(i < (NumChildren() - 1))
-                {
-                    name += ".";
-                }
+                sym = dynamic_cast<cSymbol*>(*it);
+                name += "." + sym->GetName();
             }
+
             return name;
         }
+            
+        // Return the type of the var
+        virtual cDeclNode* GetType()
+        {
+            cSymbol* sym;
 
+            sym = dynamic_cast<cSymbol*>(m_children.back());
+
+            return sym->GetDecl()->GetType();
+        }
+
+        // Return the declaration of the var
+        virtual cDeclNode* GetDecl()
+        {
+            cSymbol* sym;
+
+            sym = dynamic_cast<cSymbol*>(m_children.back());
+
+            return sym->GetDecl();
+        }
+
+        // return a string representation of the node
         virtual string NodeType() { return string("varref"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
 };

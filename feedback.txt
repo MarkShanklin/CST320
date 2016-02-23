@@ -1,4 +1,13 @@
 **************************************************
+Lab 5 Feedback
+
+-5 did not add the option minus sign to the scanner for integer constants and float constants.
+
+-27 Did not implement functionality for Test 4
+
+-25 Implemented some code for Test 3, but none of the tests pass.
+
+**************************************************
 Lab 4 Feedback
 
 -5 Your git repository contained intermediate files. It should only contain source.

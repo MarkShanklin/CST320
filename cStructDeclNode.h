@@ -9,12 +9,7 @@
 // Author: Phil Howard 
 // phil.howard@oit.edu
 //
-// Date: Jan. 18, 2016
-// 
-// Modified By: Mark Shanklin
-// mark.shanklin@oit.edu
-//
-// Mod Date: Feb. 20, 2016
+// Date: Nov. 28, 2015
 //
 
 #include "cAstNode.h"
@@ -35,9 +30,10 @@ class cStructDeclNode : public cDeclNode
                         cSymbol *struct_id)
             : cDeclNode()
         {
-            cSymbol *name;
-            AddChild(decls);
             m_symTbl = symTbl;
+            cSymbol* name;
+
+            AddChild(decls);
 
             // Figure out if the ID we were passed already exists in the 
             // local symbol table. 
@@ -53,36 +49,47 @@ class cStructDeclNode : public cDeclNode
                 {
                     name = new cSymbol(struct_id->GetName());
                 }
+
                 // insert the name of the struct into the global symbol table
                 g_SymbolTable.Insert(name);
+                name->SetDecl(this);
+                AddChild(name);
             }
-            AddChild(name);
-            name->SetDecl(this);
         }
-        virtual bool isStruct()
+
+        virtual bool IsStruct() { return true; }
+
+        // return the symbol for the declaration of the type.
+        // Since this IS a type, return our self
+        virtual cDeclNode* GetType() { return this; }
+
+        // return the name of the thing declared
+        virtual string GetName() 
+        { 
+            cSymbol* name = dynamic_cast<cSymbol*>(m_children.back());
+
+            return name->GetName(); 
+        }
+
+        // return a pointer to a field.
+        // returns nullptr if the field does not exist.
+        cSymbol* GetField(string name)
         {
-            return true;
+            cSymbol* field = cSymbolTable::FindInTable(m_symTbl, name);
+            return field;
         }
-        virtual int  GetSize()
-        {
-            return 0;
+        
+        // return the size of the struct
+        virtual int Sizeof() 
+        { 
+            cDeclsNode *decls = dynamic_cast<cDeclsNode*>(m_children.front());
+
+            return decls->Sizeof(); 
         }
-        virtual cDeclNode* GetType()
-        {
-            return this;
-        }
-        cSymbol* GetElement(string name)
-        {
-            return g_SymbolTable.FindInTable(m_symTbl, name);
-        }
-        virtual string GetName()
-        {
-            cSymbol* symbol = dynamic_cast<cSymbol*>(m_children.back());
-            return symbol->GetName();
-        }
-        virtual string NodeType() { return string("struct_decl"); }
+
+        // return a string representation of the struct
+        virtual string NodeType()   { return string("struct_decl"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
     protected:
-        cSymbolTable::symbolTable_t *m_symTbl; 
-
+        cSymbolTable::symbolTable_t *m_symTbl;      // symbol table for decls
 };

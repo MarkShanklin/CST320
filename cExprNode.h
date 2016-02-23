@@ -4,25 +4,21 @@
 //
 // Defines base class for all expressions
 //
-// This is a pure virtual class because there is no definition for
-// cAstNode::ToString()
-//
 // Author: Phil Howard 
 // phil.howard@oit.edu
 //
-// Date: Jan. 18, 2016
-//
-// Modified By: Mark Shanklin
-// mark.shanklin@oit.edu
-//
-// Modified Date: Feb. 09, 2106
+// Date: Nov. 28, 2015
 //
 
+#include "cAstNode.h"
 #include "cStmtNode.h"
 
 class cExprNode : public cStmtNode
 {
     public:
         cExprNode() : cStmtNode() {}
-        virtual cDeclNode* GetType() = 0;
+
+        // return the type of the expression
+        virtual cDeclNode *GetType() = 0;
+        virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
 };

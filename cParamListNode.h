@@ -7,7 +7,7 @@
 // Author: Phil Howard 
 // phil.howard@oit.edu
 //
-// Date: Jan. 18, 2016
+// Date: Nov. 29, 2015
 //
 
 #include "cAstNode.h"
@@ -29,6 +29,12 @@ class cParamListNode : public cAstNode
             AddChild(param);
         }
 
+        cExprNode *GetParam(int index)
+        {
+            return (cExprNode *)GetChild(index);
+        }
+
+        // return a string representation of the node
         virtual string NodeType() { return string("params"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
 };

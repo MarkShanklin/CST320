@@ -8,12 +8,7 @@
 // Author: Phil Howard 
 // phil.howard@oit.edu
 //
-// Date: Jan. 18, 2016
-// 
-// Modified By: Mark Shanklin
-// mark.shanklin@oit.edu
-//
-// Date: Feb. 21, 2016
+// Date: Nov. 28, 2015
 //
 
 #include <string>
@@ -106,21 +101,24 @@ class cSymbolTable
             cSymbol *baseType;
 
             baseType = new cSymbol("char");
-            baseType->SetDecl(new cBaseTypeNode("char",1,false));
             Insert(baseType);
+            baseType->SetDecl(new cBaseTypeNode("char", 1, false));
 
             baseType = new cSymbol("int");
-            baseType->SetDecl(new cBaseTypeNode("int",4,false));
             Insert(baseType);
+            baseType->SetDecl(new cBaseTypeNode("int", sizeof(int), false));
 
             baseType = new cSymbol("float");
-            baseType->SetDecl(new cBaseTypeNode("float",8,true));
             Insert(baseType);
+            baseType->SetDecl(new cBaseTypeNode("float", sizeof(double), true));
         }
+
         // Utility routine to do a lookup in a single level's table
         // params are the table to do the lookup in and the name of the symbol
         // Returns nullptr if the symbol isn't found.
-        cSymbol *FindInTable(symbolTable_t *table, string& name)
+        // NOTE: this is static because it is the symbolTable_t that it operates
+        //       on is passed in as a param
+        static cSymbol *FindInTable(symbolTable_t *table, string& name)
         {
             symbolTable_t::const_iterator got = table->find(name);
 
@@ -134,6 +132,7 @@ class cSymbolTable
         // in the nested table.
         list<symbolTable_t *> m_SymbolTable;
 };
+
 // Declaration for the global symbol table.
 // Definition is in main.cpp
 extern cSymbolTable g_SymbolTable;

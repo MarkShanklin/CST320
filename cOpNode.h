@@ -23,12 +23,15 @@ class cOpNode : public cAstNode
 
         virtual string NodeType()       { return "op"; }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
-        virtual string AttributesToString()   
-        { 
-            string result(" value='");
+        string GetOpAsString()
+        {
+            string result("");
 
             switch (m_op)
             {
+                case NEQUALS:
+                    result += "!=";
+                    break;
                 case EQUALS:
                     result += "==";
                     break;
@@ -42,6 +45,14 @@ class cOpNode : public cAstNode
                     result += (char)m_op;
                     break;
             }
+
+            return result;
+        }
+        virtual string AttributesToString()   
+        { 
+            string result(" value='");
+
+            result += GetOpAsString();
 
             result += "'";
 

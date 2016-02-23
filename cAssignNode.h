@@ -7,7 +7,7 @@
 // Author: Phil Howard 
 // phil.howard@oit.edu
 //
-// Date: Jan. 18, 2016
+// Date: Nov. 28, 2015
 //
 
 #include "cAstNode.h"
@@ -22,48 +22,20 @@ class cAssignNode : public cStmtNode
         cAssignNode(cVarExprNode *lval, cExprNode *expr)
             : cStmtNode()
         {
-            bool allowed = true;
-            cDeclNode* lvalType = lval->GetType();
-            cDeclNode* exprType = expr->GetType();
-            cDeclNode* charDecl = g_SymbolTable.Find("char")->GetDecl();
-            
-            if(lvalType == exprType)
-            {
-                allowed = true;
-            }
-            else
-            {
-                if(lvalType->isStruct() && exprType->isStruct())
-                {
-                    allowed = false;
-                }
-                else if(exprType->isFloat() && lvalType->isInt())
-                {
-                    allowed = false;
-                }
-                else if(lvalType == charDecl && exprType != charDecl)
-                {
-                    allowed = false;
-                }
-                else if(lvalType->isStruct() && exprType->isInt())
-                {
-                    allowed = false;
-                }
-                else if(lvalType->isInt() && exprType->isStruct())
-                {
-                    allowed = false;
-                }
-            }
+            AddChild(lval);
+            AddChild(expr);
 
-            if(allowed == true)
+            if (!lval->GetDecl()->IsVar())
             {
-                AddChild(lval);
-                AddChild(expr);
+                SemanticError(lval->GetDecl()->GetName() +
+                        " is not an lval");
             }
-            else
+            else if (!lval->GetType()->IsCompatibleWith(expr->GetType()))
             {
-                string err = "Cannot assign " + exprType->GetName() + " to " + lvalType->GetName();
-                SemanticError("test");
+                SemanticError("Cannot assign " +
+                        expr->GetType()->GetName() +
+                        " to " +
+                        lval->GetType()->GetName());
             }
         }
 

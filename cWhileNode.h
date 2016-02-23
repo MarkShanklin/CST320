@@ -9,7 +9,7 @@
 // Author: Phil Howard 
 // phil.howard@oit.edu
 //
-// Date: Jan. 18, 2016
+// Date: Nov. 29, 2015
 //
 
 #include "cAstNode.h"
@@ -27,6 +27,7 @@ class cWhileNode : public cStmtNode
             AddChild(stmt);
         }
 
+        // return a string representation of the node
         virtual string NodeType() { return string("while"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
 };

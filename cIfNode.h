@@ -10,11 +10,12 @@
 // Author: Phil Howard 
 // phil.howard@oit.edu
 //
-// Date: Jan. 18, 2016
+// Date: Nov. 29, 2015
 //
 
 #include "cAstNode.h"
 #include "cStmtNode.h"
+#include "cStmtsNode.h"
 #include "cExprNode.h"
 
 class cIfNode : public cStmtNode
@@ -30,6 +31,7 @@ class cIfNode : public cStmtNode
             AddChild(elseStmt);
         }
 
+        // Return a string representation of the node
         virtual string NodeType() { return string("if"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
 };

@@ -10,11 +10,10 @@
 // Author: Phil Howard 
 // phil.howard@oit.edu
 //
-// Date: Jan. 18, 2016
+// Date: Nov. 28, 2015
 //
 
 #include "cAstNode.h"
-#include "cDeclsNode.h"
 #include "cStmtNode.h"
 #include "cStmtsNode.h"
 
@@ -22,13 +21,14 @@ class cBlockNode : public cStmtNode
 {
     public:
         // params are the decls and statements contained in the block
-        cBlockNode(cDeclsNode *decls, cStmtsNode *statements)
+        cBlockNode(cAstNode *decls, cStmtsNode *statements)
             : cStmtNode()
         {
             AddChild(decls);
             AddChild(statements);
         }
 
+        // return the XML name of the node
         virtual string NodeType() { return string("block"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
 };

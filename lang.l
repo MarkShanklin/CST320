@@ -7,7 +7,7 @@
 // Author: Phil Howard 
 // phil.howard@oit.edu
 //
-// Date: Jan. 22, 2016
+// Date: Feb. 20, 2016
 //
 
 #include "cSymbol.h"
@@ -63,14 +63,15 @@ whitespace      '[\t\n\r ]'
                               }
                               DO_RETURN(IDENTIFIER);
                             }
-[0-9]+                      {
+[-]?[0-9]+                  {
                                 yylval.int_val = atoi(yytext); 
                                 DO_RETURN(INT_VAL); 
                             }
-[0-9]+\.[0-9]+              {
+[-]?[0-9]+\.[0-9]+          {
                                 yylval.float_val = atof(yytext);
                                 DO_RETURN(FLOAT_VAL);
                             }
+"!="                        { yylval.int_val = NEQUALS; DO_RETURN(EQUALS); }
 "=="                        { yylval.int_val = EQUALS; DO_RETURN(EQUALS); }
 "&&"                        { yylval.int_val = AND; DO_RETURN(AND); }
 "||"                        { yylval.int_val = OR; DO_RETURN(OR); }

@@ -7,12 +7,7 @@
 // Author: Phil Howard 
 // phil.howard@oit.edu
 //
-// Date: Jan. 18, 2016
-//
-// Modified By: Mark Shanklin
-// mark.shanklin@oit.edu
-//
-// Mod Date: Feb. 21, 2016
+// Date: Jan. 7, 2016
 //
 
 #include <string>
@@ -22,14 +17,13 @@ using std::vector;
 
 #include "cVisitor.h"
 
-extern void SemanticError(string);
-
 class cAstNode
 {
     public:
         typedef vector<cAstNode*>::iterator iterator;
 
-        cAstNode() {}
+        cAstNode() 
+        { }
 
         void AddChild(cAstNode *child)
         {

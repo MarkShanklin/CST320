@@ -1,32 +1,49 @@
 #pragma once
-/*******************************************
- * Author: Mark Shanklin
- * mark.shanklin@oit.edu
- *
- * Date: Feb. 20, 2016
- ******************************************/
-#include <string>
+//**************************************
+// cBaseTypeNode
+//
+// Defines virtual base class for all declarations.
+//
+// Author: Phil Howard 
+// phil.howard@oit.edu
+//
+// Date: Nov. 28, 2015
+//
+
 #include "cDeclNode.h"
+
 class cBaseTypeNode : public cDeclNode
 {
     public:
-        cBaseTypeNode(string name, int size, bool is_float)
+        cBaseTypeNode(string name, int size, bool isFloat) 
+            : cDeclNode() 
         {
             m_name = name;
             m_size = size;
-            m_is_float = is_float;
+            m_isFloat = isFloat;
         }
-        virtual bool isVar(){ return false; }
-        virtual bool isStruct(){ return false; }
-        virtual bool isFloat(){ return m_is_float; }
-        virtual bool isInt(){ return !m_is_float; }
-        virtual int GetSize(){ return m_size; }
-        virtual string GetName(){ return m_name; }
-        virtual cDeclNode* GetType(){ return this; }    
-        virtual string NodeType() { return string("type"); }
+
+        // return the symbol for the type
+        virtual cDeclNode *GetType() { return this; }
+
+        // return the name of the item that is declared
+        virtual string  GetName() { return m_name; }
+
+        virtual string NodeType() { return "type"; }
+        // return a string representation of the node
+        virtual string AttributeToString()
+        {
+            return " name=\"" + m_name + "\" size=\"" + 
+                std::to_string(m_size) +
+                "\" isFloat=\"" + std::to_string(m_isFloat);
+        }
+
+        // return size of data item
+        virtual int Sizeof() { return m_size; }
+
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
     protected:
         string m_name;
-        int m_size;
-        bool m_is_float;
+        int    m_size;
+        bool   m_isFloat;
 };

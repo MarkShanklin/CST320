@@ -8,17 +8,11 @@
 // Author: Phil Howard 
 // phil.howard@oit.edu
 //
-// Date: Jan. 18, 2016
-// 
-// Modified By: Mark Shanklin
-// mark.shanklin@oit.edu
-// 
-// Mod Date: Feb. 21, 2016
+// Date: Nov. 29, 2015
 //
 
 #include "cAstNode.h"
 #include "cExprNode.h"
-#include "cDeclNode.h"
 
 class cFloatExprNode : public cExprNode
 {
@@ -28,14 +22,17 @@ class cFloatExprNode : public cExprNode
         {
             m_value = value;
         }
-        
-        virtual string AttributesToString() 
-        {
-            return " value=\"" + std::to_string(m_value) + "\"";
-        }
-        virtual cDeclNode* GetType()
+
+        // Return the type of the expr. This is the type float
+        virtual cDeclNode *GetType()
         {
             return g_SymbolTable.Find("float")->GetDecl();
+        }
+
+        // Return a string representation of the node
+        virtual string AttributesToString()
+        {
+            return " value=\"" + std::to_string(m_value) + "\"";
         }
 
         virtual string NodeType() { return string("float"); }

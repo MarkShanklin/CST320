@@ -8,18 +8,12 @@
 // Author: Phil Howard 
 // phil.howard@oit.edu
 //
-// Date: Jan. 18, 2016
-//
-// Modified By: Mark Shanklin
-// mark.shanklin@oit.edu
-//
-// Mod Date: Feb. 21, 2016
+// Date: Nov. 29, 2015
 //
 
 #include "cAstNode.h"
-#include "cExprNode.h"
 #include "cOpNode.h"
-#include "cDeclNode.h"
+#include "cExprNode.h"
 
 class cBinaryExprNode : public cExprNode
 {
@@ -33,17 +27,25 @@ class cBinaryExprNode : public cExprNode
             AddChild(new cOpNode(op));
             AddChild(right);
         }
-        virtual cDeclNode* GetType()
+
+        // return the type of the expression
+        cDeclNode* GetType()
         {
-            cDeclNode* left = ((cExprNode*)GetChild(0))->GetType();
-            cDeclNode* right = ((cExprNode*)GetChild(2))->GetType();
-            
-            if((right->isFloat()) || (right->isInt()))
-            {
-                return right;
-            }
-            return left;
+            cExprNode *left = dynamic_cast<cExprNode *>(m_children.front());
+            cExprNode *right= dynamic_cast<cExprNode *>(m_children.back());
+            if (left->GetType() == right->GetType())
+                return left->GetType();
+            else if (left->GetType()->IsFloat())
+                return left->GetType();
+            else if (right->GetType()->IsFloat())
+                return right->GetType();
+            else if (left->GetType()->Sizeof() >=
+                     right->GetType()->Sizeof())
+                return left->GetType();
+            else
+                return right->GetType();
         }
+
         virtual string NodeType() { return string("expr"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
 };

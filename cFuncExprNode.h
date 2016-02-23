@@ -9,12 +9,7 @@
 // Author: Phil Howard 
 // phil.howard@oit.edu
 //
-// Date: Jan. 18, 2016
-// 
-// Modified By: Mark Shanklin
-// mark.shanklin@oit.edu
-//
-// Mod Date: Feb. 21, 2016
+// Date: Feb. 6, 2016
 //
 
 #include "cAstNode.h"
@@ -31,12 +26,54 @@ class cFuncExprNode : public cExprNode
         {
             AddChild(name);
             AddChild(params);
+
+            if (!name->GetDecl()->IsFunc())
+            {
+                SemanticError(name->GetName() + " is not a function");
+                return;
+            }
+
+            cFuncDeclNode *func = dynamic_cast<cFuncDeclNode*>(name->GetDecl());
+            cDeclsNode *args = func->GetParams();
+
+            if ( (args == nullptr && params != nullptr) ||
+                 (args != nullptr && params == nullptr))
+            {
+                SemanticError(name->GetName() + 
+                        " called with wrong number of arguments");
+                return;
+            }
+            else if (args != nullptr && params != nullptr)
+            {
+                if (args->NumChildren() != params->NumChildren())
+                {
+                    SemanticError(name->GetName() + 
+                            " called with wrong number of arguments");
+                    return;
+                }
+
+                for (int ii=0; ii<args->NumChildren(); ii++)
+                {
+                    if (!args->GetDecl(ii)->IsCompatibleWith(
+                                params->GetParam(ii)->GetType()))
+                    {
+                        SemanticError(name->GetName() + 
+                                " called with incompatible argument");
+                        return;
+                    }
+                }
+            }
         }
+
+        // Return the type of the var
         virtual cDeclNode* GetType()
         {
-            cSymbol* type = dynamic_cast<cSymbol*>(m_children.front());
-            return type->GetDecl();
+            cSymbol* sym = dynamic_cast<cSymbol*>(m_children.front());
+            return sym->GetDecl()->GetType();
         }
+
+
+        // return string representation of the node
         virtual string NodeType() { return string("funcCall"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
 };

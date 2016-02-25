@@ -44,12 +44,23 @@ class cComputeSize : public cVisitor
 
         virtual void Visit(cVarDeclNode* node)
         {
-            int size = node->GetType()->Sizeof();
+            int size;
+            if(node->GetType()->IsStruct()){size = node->GetType()->GetSize();}
+            else{size = node->GetType()->Sizeof();}
             node->SetSize(size);
             if(size > 1){m_offset = WordAlign(m_offset);}
             node->SetOffset(m_offset);
-            m_offset += node->GetSize();
+            m_offset += size;
             if(m_highWater < m_offset){m_highWater = m_offset;}
+        }
+
+        virtual void Visit(cStructDeclNode* node)
+        {
+            int startPoint = m_offset;
+            m_offset = 0;
+            VisitAllChildren(node);
+            node->SetSize(m_offset);
+            m_offset = startPoint;
         }
 
     protected:

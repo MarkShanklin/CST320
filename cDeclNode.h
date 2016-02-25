@@ -15,13 +15,37 @@
 class cDeclNode : public cAstNode
 {
     public:
-        cDeclNode() : cAstNode() {}
+        cDeclNode() : cAstNode() { m_size = 0; m_offset = 0; }
 
         // return the decl for the type of the thing this node represents
         virtual cDeclNode *GetType() = 0;
 
         // return the name of the item that is declared
         virtual string  GetName() = 0;
+        
+        // return the size of the item that is declared
+        virtual int GetSize()
+        {
+            return m_size;
+        }
+        
+        // return the offset of the item that is declared
+        virtual int GetOffset()
+        {
+            return m_offset;
+        }
+        
+        // sets the size of the item that is declared with passed in value
+        virtual void SetSize(int size)
+        {
+            m_size = size;
+        }
+        
+        // sets the offset of the item that is declared with passed in value
+        virtual void SetOffset(int offset)
+        {
+            m_offset = offset;
+        }
 
         // virtual functions to define what kind of decl this is.
         // subclasses should override the appropriate functions.
@@ -42,4 +66,19 @@ class cDeclNode : public cAstNode
             return false;
         }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
+        virtual string AttributesToString()   
+        { 
+            if(m_size != 0 && m_offset != 0)
+            {
+                return string(" size =\"" + std::to_string(m_size) + "\" offset=\"" +std::to_string(m_offset) + "\"" );
+            }
+            else
+            {
+                return string(""); 
+            }
+        }
+        
+    protected:
+        int m_size;
+        int m_offset;
 };

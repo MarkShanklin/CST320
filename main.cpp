@@ -7,7 +7,11 @@
 // phil.howard@oit.edu
 //
 // Date: Nov. 28, 2015
+// 
+// Modified By: Mark Shanklin
+// mark.shanklin@oit.edu
 //
+// Date Mod: Feb. 23, 2016
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -25,7 +29,7 @@ long long cSymbol::nextId;
 // takes two string args: input_file, and output_file
 int main(int argc, char **argv)
 {
-    std::cout << "Philip Howard" << std::endl;
+    std::cout << "Mark Shanklin" << std::endl;
 
     const char *outfile_name;
     int result = 0;
@@ -65,6 +69,8 @@ int main(int argc, char **argv)
     {
         if (result == 0)
         {
+            cComputeSize sizer;
+            sizer.VisitAllNodes(yyast_root);
             output << yyast_root->ToString() << std::endl;
         } else {
             output << yynerrs << " Errors in compile\n";

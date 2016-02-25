@@ -71,6 +71,23 @@ class cVarDeclNode : public cDeclNode
             cSymbol* type_id = dynamic_cast<cSymbol*>(m_children.front());
             return type_id->GetDecl(); 
         }
+        
+        virtual int GetSize()
+        {
+            return m_size;
+        }
+        virtual void SetSize(int size)
+        {
+            m_size = size;
+        }
+        virtual int GetOffset()
+        {
+            return m_offset;
+        }
+        virtual void SetOffset(int offset)
+        {
+            m_offset = offset;
+        }
 
         // Return the size of the var
         virtual int Sizeof() { return GetType()->Sizeof(); }
@@ -78,4 +95,11 @@ class cVarDeclNode : public cDeclNode
         // return a string representation of the node
         virtual string NodeType() { return string("var_decl"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
+        virtual string AttributesToString()
+        {
+            return string(" size =\"" + std::to_string(m_size) + "\" offset=\"" + std::to_string(m_offset) +"\"" );
+        }
+    protected:
+        int m_offset;
+        int m_size;
 };

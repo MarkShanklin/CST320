@@ -37,7 +37,8 @@ class cBaseTypeNode : public cDeclNode
                 std::to_string(m_size) +
                 "\" isFloat=\"" + std::to_string(m_isFloat);
         }
-
+        
+        bool isFloat(){return m_isFloat;}
         // return size of data item
         virtual int Sizeof() { return m_size; }
 

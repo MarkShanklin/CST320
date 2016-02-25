@@ -27,8 +27,24 @@ class cBlockNode : public cStmtNode
             AddChild(decls);
             AddChild(statements);
         }
+        
+        virtual int GetSize()
+        {
+            return m_size;
+        }
+        
+        virtual void SetSize(int size)
+        {
+            m_size = size;
+        }
 
         // return the XML name of the node
         virtual string NodeType() { return string("block"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
+        virtual string AttributesToString()
+        {
+            return string(" size =\"" + std::to_string(m_size) + "\"");
+        }       
+    protected:
+        int m_size;
 };

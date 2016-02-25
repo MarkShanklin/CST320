@@ -37,4 +37,4 @@
 #include "cVarExprNode.h"
 #include "cFuncExprNode.h"
 #include "cParamListNode.h"
-
+#include "cComputeSize.h"

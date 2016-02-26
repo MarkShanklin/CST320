@@ -22,6 +22,8 @@ class cBaseTypeNode : public cDeclNode
             m_size = size;
             m_isFloat = isFloat;
         }
+        
+        virtual int GetSize() { return m_size; }
 
         // return the symbol for the type
         virtual cDeclNode *GetType() { return this; }

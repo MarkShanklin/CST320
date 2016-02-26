@@ -13,6 +13,7 @@ class cComputeSize : public cVisitor
     public:
         cComputeSize() : cVisitor()
         {
+            m_varAlign = false;
             m_offset = 0;
             m_highWater = m_offset;
         }
@@ -25,14 +26,14 @@ class cComputeSize : public cVisitor
         {
             int startPoint = m_offset;
             int highWater = m_highWater;
-            m_highWater = 0;
+            m_highWater = m_offset;
             
             VisitAllChildren(node);
 
             node->SetSize(m_highWater - startPoint);
             m_highWater = std::max(highWater, m_highWater);
             m_offset = startPoint;
-            if(m_highWater < m_offset){m_highWater = m_offset;}
+            UpdateMoffset(m_offset);
         }
 
         virtual void Visit(cDeclsNode* node)
@@ -45,13 +46,12 @@ class cComputeSize : public cVisitor
         virtual void Visit(cVarDeclNode* node)
         {
             int size;
-            if(node->GetType()->IsStruct()){size = node->GetType()->GetSize();}
-            else{size = node->GetType()->Sizeof();}
+            size = node->GetType()->GetSize();
             node->SetSize(size);
-            if(size > 1){m_offset = WordAlign(m_offset);}
+            if(size > 1 || m_varAlign){UpdateMoffset(WordAlign(m_offset));}
             node->SetOffset(m_offset);
             m_offset += size;
-            if(m_highWater < m_offset){m_highWater = m_offset;}
+            UpdateMoffset(m_offset); 
         }
 
         virtual void Visit(cStructDeclNode* node)
@@ -62,10 +62,32 @@ class cComputeSize : public cVisitor
             node->SetSize(m_offset);
             m_offset = startPoint;
         }
+        
+        virtual void Visit(cFuncDeclNode* node)
+        {
+            int startPoint = m_offset;
+            m_offset = 0;
+            VisitAllChildren(node);
+            UpdateMoffset(WordAlign(m_offset));
+            node->SetSize(m_offset);
+            m_offset = startPoint; 
+        }
+        
+        //virtual void Visit(cParamsNode* node)
+       // {   
+       //     m_varAlign = true;
+       //     int startPoint = m_offset;
+       //     UpdateMoffset(WordAlign(m_offset));
+       //     VisitAllChildren(node);
+       //     UpdateMoffset(WordAlign(m_offset));
+       //     node->SetSize(m_offset - startPoint);
+       //     m_varAlign = false;
+       // }
 
     protected:
         int m_offset;
         int m_highWater;
+        bool m_varAlign;
 
         int WordAlign (int value)
         {  
@@ -73,5 +95,13 @@ class cComputeSize : public cVisitor
             value += 4 - value%4;
 
             return value;
+        }
+        void UpdateMoffset(int value)
+        {
+            if (value > m_highWater)
+            {
+                m_highWater = value;
+            }
+            m_offset = value;
         }
 };

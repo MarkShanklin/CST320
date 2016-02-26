@@ -72,23 +72,6 @@ class cVarDeclNode : public cDeclNode
             return type_id->GetDecl(); 
         }
         
-        virtual int GetSize()
-        {
-            return m_size;
-        }
-        virtual void SetSize(int size)
-        {
-            m_size = size;
-        }
-        virtual int GetOffset()
-        {
-            return m_offset;
-        }
-        virtual void SetOffset(int offset)
-        {
-            m_offset = offset;
-        }
-
         // Return the size of the var
         virtual int Sizeof() { return GetType()->Sizeof(); }
 
@@ -99,7 +82,4 @@ class cVarDeclNode : public cDeclNode
         {
             return string(" size =\"" + std::to_string(m_size) + "\" offset=\"" + std::to_string(m_offset) +"\"" );
         }
-    protected:
-        int m_offset;
-        int m_size;
 };

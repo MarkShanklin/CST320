@@ -170,10 +170,10 @@ class cFuncDeclNode : public cDeclNode
 
             return type->GetDecl()->Sizeof(); 
         }
-
         // Return a string representation of the node
         virtual string NodeType() { return string("func"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
+        virtual string AttributesToString(){ return string(" size=\"" + std::to_string(m_size) + "\" offset=\"" + std::to_string(m_offset) + "\"" );}
     protected:
         bool        m_isDefinition;     // flag indicating this is a definition,
                                         // not just a declaration

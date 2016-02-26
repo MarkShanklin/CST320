@@ -7,7 +7,6 @@
  * Date: Feb. 23, 2016
  ******************************************/
 #include "cVisitor.h"
-
 class cComputeSize : public cVisitor
 {
     public:
@@ -66,23 +65,26 @@ class cComputeSize : public cVisitor
         virtual void Visit(cFuncDeclNode* node)
         {
             int startPoint = m_offset;
+            int highWater = m_highWater;
             m_offset = 0;
             VisitAllChildren(node);
             UpdateMoffset(WordAlign(m_offset));
-            node->SetSize(m_offset);
-            m_offset = startPoint; 
+            node->SetSize(m_highWater);
+            
+            m_offset = startPoint;
+            m_highWater = highWater;
         }
         
-        //virtual void Visit(cParamsNode* node)
-       // {   
-       //     m_varAlign = true;
-       //     int startPoint = m_offset;
-       //     UpdateMoffset(WordAlign(m_offset));
-       //     VisitAllChildren(node);
-       //     UpdateMoffset(WordAlign(m_offset));
-       //     node->SetSize(m_offset - startPoint);
-       //     m_varAlign = false;
-       // }
+        virtual void Visit(cParamsNode* node)
+        {  
+            m_varAlign = true;
+            int startPoint = m_offset;
+            UpdateMoffset(WordAlign(m_offset));
+            VisitAllChildren(node);
+            UpdateMoffset(WordAlign(m_offset));
+            node->SetSize(m_offset - startPoint);
+            m_varAlign = false;
+        }
 
     protected:
         int m_offset;

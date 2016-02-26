@@ -85,6 +85,25 @@ class cComputeSize : public cVisitor
             node->SetSize(m_offset - startPoint);
             m_varAlign = false;
         }
+        
+        virtual void Visit(cVarExprNode* node)
+        {
+            m_varAlign = true;
+            int startPoint = m_offset;
+            m_offset = 0; 
+            VisitAllChildren(node);
+            int size = node->GetType()->Sizeof();
+            node->SetSize(size);
+            if(size == 1)
+            {}
+            else
+            m_offset += size;
+            if(size > 1){UpdateMoffset(WordAlign(m_offset));}
+            WordAlign(m_offset);
+            node->SetOffset(m_offset);
+            m_offset = startPoint;
+            m_varAlign = false;
+        }
 
     protected:
         int m_offset;

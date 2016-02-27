@@ -1,3 +1,9 @@
+/*******************************************
+ * Modified By: Mark Shanklin
+ * mark.shanklin@oit.edu
+ *
+ * Mod Date: Feb. 26, 2016
+ ******************************************/
 #include "lex.h"
 #include "cVisitor.h"
 #include "astnodes.h"

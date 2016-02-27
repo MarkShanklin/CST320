@@ -3,7 +3,6 @@
  * Author: Mark Shanklin
  * mark.shanklin@oit.edu
  *
- *
  * Date: Feb. 23, 2016
  ******************************************/
 #include "cVisitor.h"
@@ -26,9 +25,7 @@ class cComputeSize : public cVisitor
             int startPoint = m_offset;
             int highWater = m_highWater;
             m_highWater = m_offset;
-            
             VisitAllChildren(node);
-
             node->SetSize(m_highWater - startPoint);
             m_highWater = std::max(highWater, m_highWater);
             m_offset = startPoint;
@@ -67,10 +64,10 @@ class cComputeSize : public cVisitor
             int startPoint = m_offset;
             int highWater = m_highWater;
             m_offset = 0;
+            m_highWater = 0;
             VisitAllChildren(node);
             UpdateMoffset(WordAlign(m_offset));
             node->SetSize(m_highWater);
-            
             m_offset = startPoint;
             m_highWater = highWater;
         }
@@ -88,21 +85,18 @@ class cComputeSize : public cVisitor
         
         virtual void Visit(cVarExprNode* node)
         {
-            m_varAlign = true;
-            int startPoint = m_offset;
-            m_offset = 0; 
-            VisitAllChildren(node);
-            int size = node->GetType()->Sizeof();
-            node->SetSize(size);
-            if(size == 1)
-            {}
-            else
-            m_offset += size;
-            if(size > 1){UpdateMoffset(WordAlign(m_offset));}
-            WordAlign(m_offset);
-            node->SetOffset(m_offset);
-            m_offset = startPoint;
-            m_varAlign = false;
+            int totalOffset = 0;
+            int fieldStepOffset = 0;
+            cAstNode::iterator it;     
+            for (it=node->FirstChild(); it!=node->LastChild(); it++)
+            {
+                if ((*it) != nullptr) (*it)->Visit(this);
+                int size = node->GetType()->Sizeof();
+                node->SetSize(size);
+                fieldStepOffset = ((cSymbol *)(*it))->GetDecl()->GetOffset();
+                totalOffset += fieldStepOffset;
+            }
+            node->SetOffset(totalOffset);
         }
 
     protected:

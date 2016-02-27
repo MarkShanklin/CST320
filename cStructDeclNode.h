@@ -10,7 +10,11 @@
 // phil.howard@oit.edu
 //
 // Date: Nov. 28, 2015
+// 
+// Modified By: Mark Shanklin
+// mark.shanklin@oit.edu
 //
+// Date Mod: Feb. 26, 2016
 
 #include "cAstNode.h"
 #include "cDeclNode.h"

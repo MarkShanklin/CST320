@@ -1,3 +1,9 @@
+/*******************************************
+ * Modified By: Mark Shanklin
+ * mark.shanklin@oit.edu
+ *
+ * Mod Date: Feb. 26, 2016
+ ******************************************/
 #pragma once
 
 class cAstNode;

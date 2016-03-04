@@ -10,11 +10,7 @@
 // phil.howard@oit.edu
 //
 // Date: Nov. 28, 2015
-// 
-// Modified By: Mark Shanklin
-// mark.shanklin@oit.edu
 //
-// Date Mod: Feb. 26, 2016
 
 #include "cAstNode.h"
 #include "cDeclNode.h"
@@ -88,18 +84,12 @@ class cStructDeclNode : public cDeclNode
         { 
             cDeclsNode *decls = dynamic_cast<cDeclsNode*>(m_children.front());
 
-            return decls->Sizeof(); 
+            return decls->GetSize(); 
         }
+
         // return a string representation of the struct
         virtual string NodeType()   { return string("struct_decl"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
-        virtual string AttributesToString()
-        {
-            if(m_size != 0 || m_offset != 0) 
-                return string(" size=\"" + std::to_string(m_size) + "\" offset=\"" + std::to_string(m_offset) + "\"");
-            else
-                return "";
-        }
     protected:
         cSymbolTable::symbolTable_t *m_symTbl;      // symbol table for decls
 };

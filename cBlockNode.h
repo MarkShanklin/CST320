@@ -11,11 +11,7 @@
 // phil.howard@oit.edu
 //
 // Date: Nov. 28, 2015
-// 
-// Modified By: Mark Shanklin
-// mark.shanklin@oit.edu
 //
-// Mod Date: Feb. 26, 2016
 
 #include "cAstNode.h"
 #include "cStmtNode.h"
@@ -31,27 +27,24 @@ class cBlockNode : public cStmtNode
             AddChild(decls);
             AddChild(statements);
         }
-        
-        virtual int GetSize()
-        {
-            return m_size;
-        }
-        
-        virtual void SetSize(int size)
-        {
-            m_size = size;
-        }
+
+        virtual void SetSize(int size) { m_size = size; }
+        virtual int  GetSize()         { return m_size; }
 
         // return the XML name of the node
         virtual string NodeType() { return string("block"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
         virtual string AttributesToString()
         {
-            if(m_size != 0)
-                return string(" size =\"" + std::to_string(m_size) + "\"");
+            if (m_size != 0)
+            {
+                return " size=\"" + std::to_string(m_size) + "\"";
+            }
             else
-                return string("");
-        }       
+            {
+                return "";
+            }
+        }
     protected:
         int m_size;
 };

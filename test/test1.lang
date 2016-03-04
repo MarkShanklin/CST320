@@ -1,0 +1,5 @@
+// Test the printing of ints and floats
+{
+    print(1);
+    print(2.3456);
+}

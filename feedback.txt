@@ -1,4 +1,8 @@
 **************************************************
+Lab 6 Feedback
+
+Your use of UpdateMoffset was, in places, confusing. Otherwise, well done.
+**************************************************
 Lab 5 Feedback
 
 -5 did not add the option minus sign to the scanner for integer constants and float constants.

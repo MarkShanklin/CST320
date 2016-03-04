@@ -39,8 +39,8 @@ class cBinaryExprNode : public cExprNode
                 return left->GetType();
             else if (right->GetType()->IsFloat())
                 return right->GetType();
-            else if (left->GetType()->Sizeof() >=
-                     right->GetType()->Sizeof())
+            else if (left->GetType()->GetSize() >=
+                     right->GetType()->GetSize())
                 return left->GetType();
             else
                 return right->GetType();

@@ -9,10 +9,6 @@
 //
 // Date: Feb. 5, 2015
 //
-// Modified By: Mark Shanklin
-// mark.shanklin@oit.edu
-//
-// Date: Feb. 26, 2015
 
 #include <assert.h>
 
@@ -167,27 +163,9 @@ class cFuncDeclNode : public cDeclNode
             return name->GetName(); 
         }
 
-        // Return this size of the return type
-        virtual int Sizeof() 
-        { 
-            cSymbol* type = dynamic_cast<cSymbol*>(m_children.front());
-
-            return type->GetDecl()->Sizeof(); 
-        }
         // Return a string representation of the node
         virtual string NodeType() { return string("func"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
-        virtual string AttributesToString()
-        { 
-            if(m_size != 0 || m_offset != 0)
-            {
-                return string(" size=\"" + std::to_string(m_size) + "\" offset=\"" + std::to_string(m_offset) + "\"" );
-            }
-            else
-            {
-                return string("");
-            }
-        }
     protected:
         bool        m_isDefinition;     // flag indicating this is a definition,
                                         // not just a declaration

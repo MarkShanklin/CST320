@@ -9,10 +9,6 @@
 //
 // Date: Nov. 28, 2015
 //
-// Modified By: Mark Shanklin
-// mark.shanklin@oit.edu
-//
-// Mod Date: Feb. 26, 2016
 
 #include "cDeclNode.h"
 
@@ -26,8 +22,6 @@ class cBaseTypeNode : public cDeclNode
             m_size = size;
             m_isFloat = isFloat;
         }
-        
-        virtual int GetSize() { return m_size; }
 
         // return the symbol for the type
         virtual cDeclNode *GetType() { return this; }
@@ -36,6 +30,14 @@ class cBaseTypeNode : public cDeclNode
         virtual string  GetName() { return m_name; }
 
         virtual string NodeType() { return "type"; }
+
+        virtual int Sizeof() { return m_size; }
+
+        virtual bool IsFloat()
+        {
+            return m_isFloat;
+        }
+
         // return a string representation of the node
         virtual string AttributeToString()
         {
@@ -43,14 +45,9 @@ class cBaseTypeNode : public cDeclNode
                 std::to_string(m_size) +
                 "\" isFloat=\"" + std::to_string(m_isFloat);
         }
-        
-        bool isFloat(){return m_isFloat;}
-        // return size of data item
-        virtual int Sizeof() { return m_size; }
 
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
     protected:
         string m_name;
-        int    m_size;
         bool   m_isFloat;
 };

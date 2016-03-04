@@ -1,0 +1,6 @@
+// Test the printing of characters
+{
+    char A;
+    A = 5;
+    print(A);
+}

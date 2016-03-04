@@ -1,9 +1,3 @@
-/*******************************************
- * Modified By: Mark Shanklin
- * mark.shanklin@oit.edu
- *
- * Mod Date: Feb. 26, 2016
- ******************************************/
 #include "lex.h"
 #include "cVisitor.h"
 #include "astnodes.h"
@@ -46,7 +40,6 @@ void cVisitor::Visit(cIntExprNode *node)      { VisitAllChildren(node); }
 void cVisitor::Visit(cOpNode *node)           { VisitAllChildren(node); }
 void cVisitor::Visit(cParamListNode *node)    { VisitAllChildren(node); }
 void cVisitor::Visit(cParamsNode *node)       { VisitAllChildren(node); }
-
 void cVisitor::Visit(cPrintNode *node)        { VisitAllChildren(node); }
 void cVisitor::Visit(cReturnNode *node)       { VisitAllChildren(node); }
 void cVisitor::Visit(cStmtNode *node)         { VisitAllChildren(node); }

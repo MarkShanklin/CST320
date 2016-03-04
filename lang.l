@@ -71,7 +71,7 @@ whitespace      '[\t\n\r ]'
                                 yylval.float_val = atof(yytext);
                                 DO_RETURN(FLOAT_VAL);
                             }
-"!="                        { yylval.int_val = NEQUALS; DO_RETURN(EQUALS); }
+"!="                        { yylval.int_val = NEQUALS; DO_RETURN(NEQUALS); }
 "=="                        { yylval.int_val = EQUALS; DO_RETURN(EQUALS); }
 "&&"                        { yylval.int_val = AND; DO_RETURN(AND); }
 "||"                        { yylval.int_val = OR; DO_RETURN(OR); }

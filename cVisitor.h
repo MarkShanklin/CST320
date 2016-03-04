@@ -1,9 +1,3 @@
-/*******************************************
- * Modified By: Mark Shanklin
- * mark.shanklin@oit.edu
- *
- * Mod Date: Feb. 26, 2016
- ******************************************/
 #pragma once
 
 class cAstNode;
@@ -22,7 +16,6 @@ class cIntExprNode;
 class cOpNode;
 class cParamListNode;
 class cParamsNode;
-
 class cPrintNode;
 class cReturnNode;
 class cStmtNode;
@@ -55,7 +48,6 @@ class cVisitor
         virtual void Visit(cOpNode *node);
         virtual void Visit(cParamListNode *node);
         virtual void Visit(cParamsNode *node);
-
         virtual void Visit(cPrintNode *node);
         virtual void Visit(cReturnNode *node);
         virtual void Visit(cStmtNode *node);

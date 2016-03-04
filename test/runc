@@ -1,0 +1,29 @@
+#!/bin/bash
+./lang test/$1.lang langout
+RETVAL=$?
+if [ $RETVAL -ne 0 ] 
+then
+  echo $1 FAILED ------- && exit
+#else
+  #xmllint --format out.xml -o out2.xml
+  #RETVAL=$?
+  [ $RETVAL -ne 0 ] && echo $1 FAILED ----- && exit
+fi
+
+test/minc langout.c
+
+gcc langout.c
+RETVAL=$?
+if [ $RETVAL -ne 0 ]
+then
+  echo $1 FAILED ---------
+  exit
+fi
+
+./a.out > out
+
+diff -qbwB out test/$1.correct
+RETVAL=$?
+[ $RETVAL -eq 0 ] && echo $1 PASSED
+[ $RETVAL -ne 0 ] && echo $1 FAILED -----
+exit $RETVAL

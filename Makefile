@@ -45,5 +45,5 @@ langparse.c: lang.y
 	bison --defines=langparse.h lang.y -o langparse.c
 
 lang: $(OBJS)
-	g++ $(OBJS) -o lang
+	g++ $(OBJS) emit.o -o lang
 

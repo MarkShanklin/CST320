@@ -10,11 +10,7 @@
 // phil.howard@oit.edu
 //
 // Date: Nov. 29, 2015
-// 
-// Modified By: Mark Shanklin
-// mark.shanklin@oit.edu
 //
-// Mod Date: Feb. 26, 2016
 
 #include "cAstNode.h"
 #include "cDeclNode.h"
@@ -75,15 +71,8 @@ class cVarDeclNode : public cDeclNode
             cSymbol* type_id = dynamic_cast<cSymbol*>(m_children.front());
             return type_id->GetDecl(); 
         }
-        
-        // Return the size of the var
-        virtual int Sizeof() { return GetType()->Sizeof(); }
 
         // return a string representation of the node
         virtual string NodeType() { return string("var_decl"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
-        virtual string AttributesToString()
-        {
-            return string(" size =\"" + std::to_string(m_size) + "\" offset=\"" + std::to_string(m_offset) +"\"" );
-        }
 };

@@ -1,122 +1,118 @@
-#pragma once
-/*******************************************
- * Author: Mark Shanklin
- * mark.shanklin@oit.edu
- *
- * Date: Feb. 23, 2016
- ******************************************/
 #include "cVisitor.h"
+
 class cComputeSize : public cVisitor
 {
-    public:
-        cComputeSize() : cVisitor()
+  public:
+    cComputeSize() : cVisitor()
+    {
+        m_offset = 0;
+        m_highwater = 0;
+    }
+
+    void VisitAllNodes(cAstNode *node) { node->Visit(this); }
+
+    virtual void Visit(cBlockNode *node)
+    {
+        int start_offset = m_offset;
+        int start_highwater = m_highwater;
+
+        m_highwater = m_offset;
+        VisitAllChildren(node);
+
+        if (m_offset > m_highwater) m_highwater = m_offset;
+
+        node->SetSize(m_highwater - start_offset);
+
+        if (start_highwater > m_highwater) m_highwater = start_highwater;
+        m_offset = start_offset;
+    }
+
+    virtual void Visit(cDeclsNode *node)
+    {
+        int start_offset = m_offset;
+
+        VisitAllChildren(node);
+
+        node->SetSize(m_offset - start_offset);
+    }
+
+    virtual void Visit(cFuncDeclNode *node)
+    {
+        int start_offset = m_offset;
+        int start_highwater = m_highwater;
+
+        m_offset = 0;
+        m_highwater = 0;
+
+        VisitAllChildren(node);
+
+        node->SetSize( RoundUp(m_highwater) );
+
+        m_highwater = start_highwater;
+        m_offset = start_offset;
+    }
+
+    virtual void Visit(cParamsNode *node)
+    {
+        cAstNode::iterator it;
+        for (it=node->FirstChild(); it!=node->LastChild(); it++)
         {
-            m_varAlign = false;
-            m_offset = 0;
-            m_highWater = m_offset;
+            if ((*it) != nullptr) (*it)->Visit(this);
+            m_offset = RoundUp(m_offset);
         }
 
-        virtual void VisitAllNodes(cAstNode* node) { node->Visit(this); }
+        node->SetSize(m_offset);
+        if (m_offset > m_highwater) m_highwater = m_offset;
+    }
 
-        int GetHighWater() { return m_highWater; }
+    virtual void Visit(cStructDeclNode *node)
+    {
+        int start_offset = m_offset;
 
-        virtual void Visit(cBlockNode* node)
+        m_offset = 0;
+
+        VisitAllChildren(node);
+
+        node->SetSize(m_offset);
+        m_offset = start_offset;
+    }
+
+    virtual void Visit(cVarDeclNode *node)
+    {
+        node->SetSize(node->GetType()->GetSize());
+
+        if (node->GetSize() != 1) m_offset = RoundUp(m_offset);
+
+        node->SetOffset(m_offset);
+
+        m_offset += node->GetSize();
+
+        if (m_offset > m_highwater) m_highwater = m_offset;
+    }
+
+    virtual void Visit(cVarExprNode *node)
+    {
+        int offset = 0;
+        cDeclNode *decl;
+
+        for (int ii=0; ii<node->NumChildren(); ii++)
         {
-            int startPoint = m_offset;
-            int highWater = m_highWater;
-            m_highWater = m_offset;
-            VisitAllChildren(node);
-            node->SetSize(m_highWater - startPoint);
-            m_highWater = std::max(highWater, m_highWater);
-            m_offset = startPoint;
-            UpdateMoffset(m_offset);
+            decl = node->GetElement(ii)->GetDecl();
+            offset += decl->GetOffset();
         }
+        node->SetOffset(offset);
 
-        virtual void Visit(cDeclsNode* node)
-        {
-            int startPoint = m_offset;
-            VisitAllChildren(node);
-            node->SetSize(m_offset - startPoint);
-        }
+        // decl is the last in the list, which is correct for size
+        node->SetSize(decl->GetSize());
+    }
+  protected:
+    int m_offset;
+    int m_highwater;
 
-        virtual void Visit(cVarDeclNode* node)
-        {
-            int size;
-            size = node->GetType()->GetSize();
-            node->SetSize(size);
-            if(size > 1 || m_varAlign){UpdateMoffset(WordAlign(m_offset));}
-            node->SetOffset(m_offset);
-            m_offset += size;
-            UpdateMoffset(m_offset); 
-        }
-
-        virtual void Visit(cStructDeclNode* node)
-        {
-            int startPoint = m_offset;
-            m_offset = 0;
-            VisitAllChildren(node);
-            node->SetSize(m_offset);
-            m_offset = startPoint;
-        }
-        
-        virtual void Visit(cFuncDeclNode* node)
-        {
-            int startPoint = m_offset;
-            int highWater = m_highWater;
-            m_offset = 0;
-            m_highWater = 0;
-            VisitAllChildren(node);
-            UpdateMoffset(WordAlign(m_offset));
-            node->SetSize(m_highWater);
-            m_offset = startPoint;
-            m_highWater = highWater;
-        }
-        
-        virtual void Visit(cParamsNode* node)
-        {  
-            m_varAlign = true;
-            int startPoint = m_offset;
-            UpdateMoffset(WordAlign(m_offset));
-            VisitAllChildren(node);
-            UpdateMoffset(WordAlign(m_offset));
-            node->SetSize(m_offset - startPoint);
-            m_varAlign = false;
-        }
-        
-        virtual void Visit(cVarExprNode* node)
-        {
-            int totalOffset = 0;
-            int fieldStepOffset = 0;
-            cAstNode::iterator it;     
-            for (it=node->FirstChild(); it!=node->LastChild(); it++)
-            {
-                if ((*it) != nullptr) (*it)->Visit(this);
-                int size = node->GetType()->Sizeof();
-                node->SetSize(size);
-                fieldStepOffset = ((cSymbol *)(*it))->GetDecl()->GetOffset();
-                totalOffset += fieldStepOffset;
-            }
-            node->SetOffset(totalOffset);
-        }
-
-    protected:
-        int m_offset;
-        int m_highWater;
-        bool m_varAlign;
-
-        int WordAlign (int value)
-        {  
-           if(value%4 != 0) 
-            value += 4 - value%4;
-
-            return value;
-        }
-        void UpdateMoffset(int value)
-        {
-            if (value > m_highWater)
-            {
-                m_highWater = value;
-            }
-            m_offset = value;
-        }
+    int RoundUp(int value)
+    {
+        if (value % WORD_SIZE == 0) return value;
+        return value + WORD_SIZE - value%WORD_SIZE;
+    }
 };
+

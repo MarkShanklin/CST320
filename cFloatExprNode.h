@@ -28,7 +28,11 @@ class cFloatExprNode : public cExprNode
         {
             return g_SymbolTable.Find("float")->GetDecl();
         }
-
+        
+        double GetValue()
+        {
+            return m_value;
+        }
         // Return a string representation of the node
         virtual string AttributesToString()
         {

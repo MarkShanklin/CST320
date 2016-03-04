@@ -10,11 +10,7 @@
 // phil.howard@oit.edu
 //
 // Date: Nov. 29, 2015
-// 
-// Modified By: Mark Shanklin
-// mark.shanklin@oit.edu
 //
-// Mod Date: Feb. 26, 2016
 
 #include <assert.h>
 
@@ -109,28 +105,33 @@ class cVarExprNode : public cExprNode
             return sym->GetDecl();
         }
 
-        virtual int GetSize()
+        void SetOffset(int offset) { m_offset = offset; }
+        void SetSize(int size)     { m_size = size; }
+        int GetOffset()            { return m_offset; }
+        int GetSize()              { return m_size; }
+
+        cSymbol* GetElement(int index)
         {
-            return m_size;
-        }
-        virtual int GetOffset()
-        {
-            return m_offset;
-        }
-        virtual void SetSize(int size)
-        {
-            m_size = size;
-        }
-        virtual void SetOffset(int offset)
-        {
-            m_offset = offset;
+            return (cSymbol*)GetChild(index);
         }
 
         // return a string representation of the node
         virtual string NodeType() { return string("varref"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
-        virtual string AttributesToString() { return string(" size=\"" + std::to_string(m_size) + "\" offset=\"" + std::to_string(m_offset) + "\""); }
+
+        virtual string AttributesToString()
+        {
+            if (m_size != 0 || m_offset != 0)
+            {
+                return " size=\"" + std::to_string(m_size) + "\" offset=\"" +
+                    std::to_string(m_offset) + "\"";
+            }
+            else
+            {
+                return "";
+            }
+        }
     protected:
-        int m_size;
         int m_offset;
+        int m_size;
 };

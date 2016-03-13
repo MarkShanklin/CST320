@@ -1,0 +1,52 @@
+//Test Binary Expr
+{
+    int a;
+    int b;
+    int c;
+    int d;
+    int e;
+
+    float f;
+    float g;
+    float h;
+    float i;
+
+    char j;
+    char k;
+    char l;
+    char m;
+
+    a = 10 + 20;        //30
+    b = a - 10;         //20
+    c = b / 2;          //10
+    d = c * 2;          //20
+    e = d % 2;          //0
+
+    f = 5.5 + 94.599;   //100.0990
+    g = f - 50.199;     //49.9000
+    h = g * 2.0;        //99.8000
+    i = h / 4;          //24.9500
+
+    j = 20 + 30;        //50
+    k = j - 25;         //25
+    l = j * 2;          //100
+    m = l / 5;          //20
+
+    print(a);
+    print(b);
+    print(c);
+    print(d);
+    print(e);
+    print(f);
+    print(g);
+    print(h);
+    print(i);
+    print(j);
+    print(k);
+    print(l);
+    print(m);
+    print(b == d);//1
+    print(b == a);//0
+    print(b != a);//1
+    print(b != d);//0
+}

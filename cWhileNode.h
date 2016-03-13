@@ -26,7 +26,8 @@ class cWhileNode : public cStmtNode
             AddChild(cond);
             AddChild(stmt);
         }
-
+        cExprNode* GetCond() { return (cExprNode*)GetChild(0); }
+        cStmtNode* GetStmt() { return (cStmtNode*)GetChild(1); }
         // return a string representation of the node
         virtual string NodeType() { return string("while"); }
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }

@@ -1,0 +1,14 @@
+//Test Structs.
+{
+    struct
+    {
+        int a;
+        int b;
+    }struct_a;
+
+    struct_a.b = 5;
+    struct_a.a = struct_a.b;
+
+    print(struct_a.a);
+    print(struct_a.b);
+}

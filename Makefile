@@ -14,7 +14,8 @@ OBJS=main.o \
 	 langlex.o \
 	 langparse.o \
 	 cVisitor.o \
-
+	 emit.o \
+	
 all: lang
 
 clean:
@@ -45,5 +46,5 @@ langparse.c: lang.y
 	bison --defines=langparse.h lang.y -o langparse.c
 
 lang: $(OBJS)
-	g++ $(OBJS) emit.o -o lang
+	g++ $(OBJS) -o lang
 

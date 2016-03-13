@@ -19,6 +19,7 @@ class cExprNode : public cStmtNode
         cExprNode() : cStmtNode() {}
 
         // return the type of the expression
-        virtual cDeclNode *GetType() = 0;
+        virtual cDeclNode* GetType() = 0;
+        virtual cDeclNode* GetDecl() = 0;
         virtual void Visit(cVisitor *visitor) { visitor->Visit(this); }
 };

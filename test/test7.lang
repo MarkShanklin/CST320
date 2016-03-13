@@ -1,0 +1,17 @@
+//Test Functions and return
+{
+    int plus_plus( int v )
+    {
+        print(v);
+        v = v + 1;
+        print(v);
+        return v;
+    }
+    int x;
+    int y;
+
+    x = 1;
+    y = plus_plus(x);
+
+    print(x);
+}

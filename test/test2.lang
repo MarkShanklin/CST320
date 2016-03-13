@@ -1,6 +1,8 @@
-// Test the printing of characters
+// Test the assignment and printing of characters
 {
-    char A;
-    A = 5;
-    print(A);
+    char a;
+
+    a = 5;
+    
+    print(a);
 }
